@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+:root{
+  --brand:#0d6efd;
+  --muted:#6c757d;
+  --card-shadow: 0 6px 18px rgba(13,110,253,0.08);
+}
+html,body{font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial; background:#fbfbfd; color:#212529}
+body{padding-top:68px}
+.navbar-brand{font-weight:700}
+.product-card{transition:transform .18s ease, box-shadow .18s ease; border-radius:8px; overflow:hidden; box-shadow:var(--card-shadow)}
+.product-card img{height:160px; object-fit:cover}
+.product-card:hover{transform:translateY(-6px); box-shadow:0 12px 30px rgba(13,110,253,0.12)}
+.btn-primary{background:var(--brand); border-color:var(--brand)}
+.card-title{font-size:1rem; margin-bottom:.4rem}
+.card-text{color:var(--muted)}
+.container-main{padding-top:1.25rem}
+/* Animations */
+.animate-in{animation:cardIn .36s cubic-bezier(.2,.9,.24,1)}
+@keyframes cardIn{from{opacity:0; transform:translateY(8px) scale(.995)} to{opacity:1; transform:translateY(0) scale(1)}}
+.toast{opacity:0.98}
+/* Responsive tweaks */
+@media (max-width:768px){ .product-card img{height:140px} .col-md-3{flex:0 0 50%; max-width:50%} }
+

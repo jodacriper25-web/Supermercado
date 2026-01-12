@@ -1,0 +1,18 @@
+/* Admin specific styles */
+.admin-topbar{background:linear-gradient(90deg,#0d6efd,#2b7cff); color:#fff}
+.admin-topbar .navbar-brand{color:#fff;font-weight:700}
+.admin-topbar .btn{border:0}
+.container-main{padding-top:1.25rem}
+.table thead th{background:#f8f9fa}
+.table tbody tr:hover{background:#fbfbfe}
+.table tbody tr.selected{background:#eaf4ff}
+.sortable{cursor:pointer; user-select:none}
+.sortable:after{content:' \2193'; color:#9aa3b2; font-size:.75rem; margin-left:.4rem}
+.card{border-radius:8px}
+.table{border-radius:6px; overflow:hidden}
+.form-control, .form-select{border-radius:6px}
+.kpi{background:#fff; padding:1rem; border-radius:8px; box-shadow: 0 8px 20px rgba(16,24,40,0.04)}
+.small-muted{color:#6c757d}
+/* Helpers */
+.mb-sm{margin-bottom:.5rem}
+

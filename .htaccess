@@ -1,0 +1,3 @@
+# Redirección para desarrollo local en XAMPP si es necesario
+RewriteEngine On
+# RewriteRule ^api/(.*)$ backend/public/api.php [L,QSA]
