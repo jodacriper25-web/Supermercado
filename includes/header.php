@@ -1,9 +1,7 @@
 <?php
 // Shared header include - outputs <head> and nav. Set $title before including if desired.
 ?>
-<!doctype html>
-<html lang="es">
-<head>
+
   <head>
     <!-- ================= META BÁSICOS ================= -->
     <meta charset="UTF-8">
@@ -13,11 +11,6 @@
 
     <title>Supermercado plantilla web | WIX</title>
 
-    <!-- ================= SEO ================= -->
-    <meta name="description" content="Encuentra todo lo que buscas con esta plantilla nueva y seductora. Con Wix Stores, tus clientes fieles pueden agregar productos a su carrito, pagar online e incluso crear una lista de deseos. Los compradores también pueden mantenerse actualizados sobre las últimas ofertas mediante el formulario de suscripción integrado. Crea una experiencia de compra tan fácil y conveniente como hacer clic en un botón. Comienza hoy mismo.">
-    <meta name="author" content="Wixpress">
-    <link rel="canonical" href="https://es.wix.com/website-template/view/html/2949">
-    <meta name="google-site-verification" content="QXhlrY-V2PWOmnGUb8no0L-fKzG48uJ5ozW0ukU7Rpo">
 
     <!-- ================= OPEN GRAPH / REDES ================= -->
     <meta property="og:title" content="Supermercado plantilla web | WIX">
@@ -30,9 +23,7 @@
     <meta property="fb:admins" content="731184828">
 
     <!-- ================= FAVICON ================= -->
-    <link rel="icon" sizes="192x192" href="https://www.wix.com/favicon.ico">
-    <link rel="shortcut icon" href="https://www.wix.com/favicon.ico">
-    <link rel="apple-touch-icon" href="https://www.wix.com/favicon.ico">
+  
 
     <!-- ================= FUENTES ================= -->
     <link rel="stylesheet" href="https://static.parastorage.com/services/third-party/fonts/Helvetica/fontFace.css">
@@ -96,14 +87,3 @@
     <style id="operaUserStyle"></style>
 </head>
 
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/Supermercado/">Supermercado Yaruquíes</a>
-    <div class="d-flex">
-      <button id="view-cart" class="btn btn-outline-primary">Carrito <span id="cart-count" class="badge bg-secondary">0</span></button>
-    </div>
-  </div>
-</nav>
-<div class="container container-main mt-3">
