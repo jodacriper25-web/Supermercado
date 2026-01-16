@@ -134,4 +134,5 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Supermercado/includes/header.php';
   </div>
 </div>
 
+</div>
 <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/Supermercado/includes/footer.php'; ?>
