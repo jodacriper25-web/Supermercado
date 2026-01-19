@@ -28,25 +28,26 @@ session_start();
     </div>
 
     <div class="header-actions d-flex gap-2">
+
       <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#cartModal">
         <i class="bi bi-cart"></i>
         <span id="cartCount">0</span>
       </button>
 
-     <?php if (isset($_SESSION['client'])): ?>
-  <span class="btn btn-outline-secondary disabled">
-    <?= htmlspecialchars($_SESSION['client']['name']) ?>
-  </span>
-  <a href="/Supermercado/frontend/public/logout.php" class="btn btn-outline-danger">
-    Salir
-  </a>
-<?php else: ?>
-  <a href="/Supermercado/frontend/public/login.php" class="btn btn-primary">
-    Ingresar
-  </a>
-<?php endif; ?>
+      <?php if (isset($_SESSION['client'])): ?>
+        <span class="btn btn-outline-secondary disabled">
+          <?= htmlspecialchars($_SESSION['client']['name']) ?>
+        </span>
+        <a href="/Supermercado/frontend/public/logout.php" class="btn btn-outline-danger">
+          Salir
+        </a>
+      <?php else: ?>
+        <a href="/Supermercado/frontend/public/login.php" class="btn btn-primary">
+          Ingresar
+        </a>
+      <?php endif; ?>
 
-
+    </div>
   </div>
 </header>
 
@@ -54,7 +55,7 @@ session_start();
 <section class="promo-section container mt-4">
   <div id="promoCarousel" class="carousel slide promo-carousel" data-bs-ride="carousel">
     <div class="carousel-inner" id="promoSlides">
-      <!-- promos dinámicas desde ADMIN (cupones activos) -->
+      <!-- Promociones dinámicas desde ADMIN -->
     </div>
 
     <button class="carousel-control-prev" type="button" data-bs-target="#promoCarousel" data-bs-slide="prev">
@@ -82,7 +83,7 @@ session_start();
 
   <!-- PRODUCTOS -->
   <section id="products" class="row g-4 products-grid">
-    <!-- productos dinámicos -->
+    <!-- Productos dinámicos -->
   </section>
 
   <div id="emptyMsg" class="empty-msg d-none">
@@ -117,36 +118,12 @@ session_start();
   </div>
 </div>
 
-<!-- ================= LOGIN ================= -->
-<div class="modal fade" id="loginModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5>🔐 Iniciar sesión</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <input id="email" class="form-control mb-2" placeholder="Correo electrónico">
-        <input id="password" type="password" class="form-control mb-2" placeholder="Contraseña">
-        <div id="loginMsg" class="text-danger small"></div>
-      </div>
-      <div class="modal-footer">
-        <button id="loginBtn" class="btn btn-primary w-100">Entrar</button>
-      </div>
-    </div>
+<!-- ================= FOOTER ================= -->
+<footer class="main-footer">
+  <div class="container">
+    <small>© 2024 Supermercado Yaruquíes. Todos los derechos reservados.</small>
   </div>
-</div>
-
-<!-- ================= TOAST ================= -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-  <div id="toast" class="toast">
-    <div class="toast-header">
-      <strong class="me-auto">Supermercado</strong>
-      <button class="btn-close" data-bs-dismiss="toast"></button>
-    </div>
-    <div class="toast-body" id="toastBody"></div>
-  </div>
-</div>
+</footer>
 
 <!-- ================= JS ================= -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -155,17 +132,17 @@ session_start();
 let page = 1;
 let loading = false;
 
-/* ================= PROMOCIONES (CUPONES ADMIN) ================= */
-async function loadPromos(){
+/* ================= PROMOCIONES ================= */
+async function loadPromos() {
   const res = await fetch('/Supermercado/backend/public/api.php?action=promotions');
   const json = await res.json();
   promoSlides.innerHTML = '';
 
-  if(!json.promos || json.promos.length === 0) return;
+  if (!json.promos || json.promos.length === 0) return;
 
-  json.promos.forEach((p,i)=>{
+  json.promos.forEach((p, i) => {
     promoSlides.innerHTML += `
-      <div class="carousel-item ${i===0?'active':''}">
+      <div class="carousel-item ${i === 0 ? 'active' : ''}">
         <div class="promo-slide">
           <h3>${p.code}</h3>
           <p>
@@ -179,32 +156,32 @@ async function loadPromos(){
   });
 }
 
-/* ================= PRODUCTOS (ADMIN → FRONTEND) ================= */
-async function loadProducts(reset=false){
-  if(loading) return;
+/* ================= PRODUCTOS ================= */
+async function loadProducts(reset = false) {
+  if (loading) return;
   loading = true;
   loader.classList.remove('d-none');
 
-  if(reset){
+  if (reset) {
     page = 1;
     products.innerHTML = '';
   }
 
-  const search = search.value;
-  const res = await fetch(`/Supermercado/backend/public/api.php?action=products_public&page=${page}&search=${search}`);
+  const query = search.value;
+  const res = await fetch(`/Supermercado/backend/public/api.php?action=products_public&page=${page}&search=${query}`);
   const json = await res.json();
 
   loader.classList.add('d-none');
   loading = false;
 
-  if(json.products.length === 0 && page === 1){
+  if (json.products.length === 0 && page === 1) {
     emptyMsg.classList.remove('d-none');
     return;
   }
 
   emptyMsg.classList.add('d-none');
 
-  json.products.forEach(p=>{
+  json.products.forEach(p => {
     products.innerHTML += `
       <div class="col-md-3">
         <div class="product-card">

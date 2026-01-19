@@ -1,41 +1,56 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Crear cuenta</title>
+  <title>Registro | Supermercado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/Supermercado/frontend/css/style.css">
 </head>
-<body class="auth-page">
 
-<div class="auth-card">
-  <h3>📝 Crear cuenta</h3>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
 
-  <input id="name" placeholder="Nombre completo">
-  <input id="email" placeholder="Correo electrónico">
-  <input id="password" type="password" placeholder="Contraseña">
+<div class="card shadow-sm p-4 login-card">
+  <h4 class="text-center mb-3">📝 Crear cuenta</h4>
 
-  <div id="msg"></div>
+  <input id="name" class="form-control mb-2" placeholder="Nombre completo">
+  <input id="email" class="form-control mb-2" placeholder="Correo electrónico">
+  <input id="password" type="password" class="form-control mb-2" placeholder="Contraseña">
 
-  <button id="registerBtn">Registrarme</button>
+  <div id="msg" class="text-danger small mb-2"></div>
 
-  <div class="auth-links">
-    <a href="login.php">Ya tengo cuenta</a>
-  </div>
+  <button id="registerBtn" class="btn btn-success w-100">
+    Registrarse
+  </button>
 </div>
 
 <script>
 registerBtn.onclick = async () => {
-  const res = await fetch('/Supermercado/backend/public/api.php?action=register', {
+  msg.innerText = '';
+
+  const body = {
+    name: name.value,
+    email: email.value,
+    password: password.value
+  };
+
+  const res = await fetch('/Supermercado/backend/public/api.php?action=client_register', {
     method:'POST',
-    body: JSON.stringify({
-      name: name.value,
-      email: email.value,
-      password: password.value
-    })
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(body)
   });
 
   const json = await res.json();
-  msg.innerText = json.success ? 'Cuenta creada ✔️' : json.error;
+
+  if(json.success){
+    window.location.href='login.php';
+  }else{
+    msg.innerText = json.error || 'Error al crear cuenta';
+  }
 };
 </script>
 
