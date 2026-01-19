@@ -1,13 +1,13 @@
 <?php
-session_start();
+// NO session_start aquí
 
-function generate_csrf() {
-    if (empty($_SESSION['_csrf'])) {
-        $_SESSION['_csrf'] = bin2hex(random_bytes(32));
+function generate_csrf(): string {
+    if (empty($_SESSION['csrf'])) {
+        $_SESSION['csrf'] = bin2hex(random_bytes(32));
     }
-    return $_SESSION['_csrf'];
+    return $_SESSION['csrf'];
 }
 
-function validate_csrf($token) {
-    return isset($_SESSION['_csrf']) && hash_equals($_SESSION['_csrf'], $token);
+function validate_csrf(string $token): bool {
+    return isset($_SESSION['csrf']) && hash_equals($_SESSION['csrf'], $token);
 }

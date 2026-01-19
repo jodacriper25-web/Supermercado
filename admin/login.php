@@ -1,9 +1,12 @@
 <?php
 // admin/login.php
-session_start();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Si ya está logueado como admin, redirigir
-if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') {
+if (isset($_SESSION['user']) && ($_SESSION['user']['role'] ?? '') === 'admin') {
     header('Location: dashboard.php');
     exit;
 }
@@ -19,71 +22,97 @@ if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- CSS Admin -->
-  <link rel="stylesheet" href="/Supermercado/frontend/public/css/admin.css">
+  <link rel="stylesheet" href="/Supermercado/admin/admin.css">
 </head>
 
 <body class="bg-light d-flex align-items-center justify-content-center vh-100">
 
-<div class="card shadow-sm p-4" style="width:380px">
-  <h4 class="mb-3 text-center">🔐 Admin Login</h4>
+<div class="card shadow p-4 border-0" style="width:380px">
+  <h4 class="mb-3 text-center fw-bold">🔐 Panel Administrativo</h4>
+  <p class="text-center text-muted small mb-4">
+    Acceso exclusivo para administradores
+  </p>
 
-  <input id="email" type="email" class="form-control mb-2" placeholder="Email">
-  <input id="password" type="password" class="form-control mb-3" placeholder="Contraseña">
+  <div class="mb-2">
+    <input id="email" type="email" class="form-control" placeholder="Correo electrónico" autocomplete="username">
+  </div>
 
-  <div id="msg" class="text-danger small mb-2"></div>
+  <div class="mb-3">
+    <input id="password" type="password" class="form-control" placeholder="Contraseña" autocomplete="current-password">
+  </div>
 
-  <button id="loginBtn" class="btn btn-primary w-100">Entrar</button>
+  <div id="msg" class="text-danger small mb-3"></div>
+
+  <button id="loginBtn" class="btn btn-primary w-100">
+    Ingresar
+  </button>
+
+  <div class="text-center mt-3">
+    <small class="text-muted">Supermercado · Admin</small>
+  </div>
 </div>
 
 <script>
-document.getElementById('loginBtn').addEventListener('click', async () => {
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const loginBtn = document.getElementById('loginBtn');
+const msg = document.getElementById('msg');
 
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value.trim();
-  const msg = document.getElementById('msg');
+async function login() {
 
-  msg.innerText = '';
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  msg.textContent = '';
 
   if (!email || !password) {
-    msg.innerText = 'Completa todos los campos';
+    msg.textContent = 'Completa todos los campos';
     return;
   }
+
+  loginBtn.disabled = true;
+  loginBtn.textContent = 'Verificando...';
 
   try {
     const res = await fetch('/Supermercado/backend/public/api.php?action=admin_login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
 
-    // Si el backend responde HTML (error PHP), lo capturamos
     const text = await res.text();
-    let json;
+    let data;
 
     try {
-      json = JSON.parse(text);
-    } catch (e) {
+      data = JSON.parse(text);
+    } catch {
       console.error(text);
-      msg.innerText = 'Error interno del servidor';
+      msg.textContent = 'Error interno del servidor';
       return;
     }
 
-    if (json.success) {
-      // Guardar CSRF para peticiones admin
-      localStorage.setItem('admin_csrf', json.csrf);
-
-      // Redirigir al dashboard
+    if (data.success) {
+      localStorage.setItem('admin_csrf', data.csrf);
       window.location.href = 'dashboard.php';
     } else {
-      msg.innerText = json.error || 'Credenciales inválidas';
+      msg.textContent = data.error || 'Credenciales inválidas';
     }
 
   } catch (err) {
     console.error(err);
-    msg.innerText = 'No se pudo conectar al servidor';
+    msg.textContent = 'No se pudo conectar al servidor';
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.textContent = 'Ingresar';
   }
+}
+
+// Click
+loginBtn.addEventListener('click', login);
+
+// Enter
+passwordInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') login();
 });
 </script>
 

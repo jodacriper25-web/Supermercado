@@ -1,5 +1,11 @@
 <?php
 // Admin – Gestión de Productos
+session_start();
+
+if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {
+    header('Location: login.php');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -13,84 +19,175 @@
 
   <!-- Admin CSS -->
   <link rel="stylesheet" href="/Supermercado/frontend/public/css/admin.css">
+
+  <style>
+    body { overflow-x: hidden; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0f172a, #1e293b);
+      color: #fff;
+    }
+
+    .sidebar a {
+      color: #cbd5f5;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 8px;
+      transition: all .2s ease;
+    }
+
+    .sidebar a:hover {
+      background: rgba(255,255,255,.08);
+      transform: translateX(4px);
+      color: #fff;
+    }
+
+    .sidebar a.active {
+      background: rgba(255,255,255,.15);
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .content {
+      margin-left: 260px;
+      min-height: 100vh;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      height: 64px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* TABLE */
+    .table-card {
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .table thead {
+      background: #f8fafc;
+    }
+
+    tr.selected {
+      background: #eef2ff !important;
+    }
+
+    /* ACTION BUTTONS */
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* MODAL */
+    .modal-content {
+      border-radius: 14px;
+    }
+  </style>
 </head>
 
 <body class="bg-light">
 
-<!-- TOPBAR -->
-<nav class="navbar admin-topbar px-4">
-  <span class="navbar-brand fw-bold">
-    🛒 Admin · Productos
-  </span>
+<!-- SIDEBAR -->
+<div class="sidebar position-fixed p-4">
+  <h4 class="fw-bold mb-4">🛒 Supermercado</h4>
 
-  <div class="d-flex gap-2">
-    <a href="/Supermercado/admin/index.php" class="btn btn-sm btn-light">
-      Dashboard
-    </a>
-  </div>
-</nav>
+  <a href="dashboard.php">📊 Dashboard</a>
+  <a href="products.php" class="active">📦 Productos</a>
+  <a href="orders.php">🧾 Pedidos</a>
+  <a href="coupons.php">🎟 Cupones</a>
+  <a href="reports.php">📈 Reportes</a>
 
-<!-- CONTENIDO -->
-<div class="container container-main">
+  <hr class="text-secondary my-4">
 
-  <!-- ENCABEZADO -->
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <h1 class="fw-bold mb-0">Productos</h1>
-      <p class="small-muted">Administración del inventario</p>
-    </div>
-    <button id="newBtn" class="btn btn-success">
-      ➕ Nuevo producto
-    </button>
-  </div>
-
-  <!-- ACCIONES -->
-  <div class="d-flex gap-2 mb-3">
-    <button id="exportProductsSelectedBtn" class="btn btn-outline-success btn-sm">
-      Exportar seleccionados
-    </button>
-    <button id="exportProductsFilteredBtn" class="btn btn-outline-secondary btn-sm">
-      Exportar filtrados
-    </button>
-
-  <button id="exportXmlBtn" class="btn btn-outline-success btn-sm">
-    📤 Exportar XML
-  </button>
-
-  <label class="btn btn-outline-primary btn-sm mb-0">
-    📥 Importar XML
-    <input type="file" id="importXmlInput" accept=".xml" hidden>
-  </label>
+  <a href="logout.php" class="text-danger fw-semibold">🚪 Cerrar sesión</a>
 </div>
 
-  <!-- TABLA -->
-  <div class="card">
-    <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0" id="table">
-        <thead>
-          <tr>
-            <th><input type="checkbox" id="selectAllProducts"></th>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th class="text-end">Acciones</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
+<!-- CONTENT -->
+<div class="content">
 
-  <!-- PAGINACIÓN -->
-  <nav class="mt-3">
-    <ul id="prodPagination" class="pagination"></ul>
+  <!-- TOPBAR -->
+  <nav class="navbar bg-white shadow-sm px-4 topbar">
+    <span class="navbar-text fw-semibold">
+      Gestión de productos
+    </span>
   </nav>
 
+  <div class="container-fluid px-4 mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h2 class="fw-bold mb-0">Productos</h2>
+        <p class="text-muted small mb-0">
+          Administración del inventario
+        </p>
+      </div>
+
+      <button id="newBtn" class="btn btn-success btn-icon">
+        ➕ Nuevo producto
+      </button>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <button class="btn btn-outline-success btn-sm">
+        📤 Exportar seleccionados
+      </button>
+
+      <button class="btn btn-outline-secondary btn-sm">
+        📤 Exportar filtrados
+      </button>
+
+      <button id="exportXmlBtn" class="btn btn-outline-success btn-sm">
+        📤 Exportar XML
+      </button>
+
+      <label class="btn btn-outline-primary btn-sm mb-0">
+        📥 Importar XML
+        <input type="file" id="importXmlInput" accept=".xml" hidden>
+      </label>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card table-card shadow-sm">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" id="table">
+          <thead>
+            <tr>
+              <th width="40">
+                <input type="checkbox" id="selectAllProducts">
+              </th>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <nav class="mt-3">
+      <ul id="prodPagination" class="pagination"></ul>
+    </nav>
+
+  </div>
 </div>
 
-<!-- MODAL FORM -->
+<!-- MODAL -->
 <div class="modal fade" id="formModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -140,13 +237,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-/* ======================
-   API HELPER
-====================== */
 async function api(action, opts = {}) {
-  const headers = opts.headers || {};
-  headers['Content-Type'] = 'application/json';
-  const csrf = localStorage.getItem('admin_csrf') || '';
+  const headers = { 'Content-Type': 'application/json' };
+  const csrf = localStorage.getItem('admin_csrf');
   if (csrf) headers['X-CSRF-Token'] = csrf;
 
   const qs = opts.query ? '&' + opts.query : '';
@@ -157,15 +250,8 @@ async function api(action, opts = {}) {
   return await res.json();
 }
 
-/* ======================
-   LISTADO
-====================== */
-let currentPage = 1;
-const perPage = 10;
-
-async function loadProducts(page = 1) {
-  currentPage = page;
-  const json = await api('products', { query: `page=${page}&per_page=${perPage}` });
+async function loadProducts() {
+  const json = await api('products');
   const tbody = document.querySelector('#table tbody');
   tbody.innerHTML = '';
 
@@ -200,9 +286,6 @@ async function loadProducts(page = 1) {
   );
 }
 
-/* ======================
-   CRUD
-====================== */
 function openNew() {
   pid.value = '';
   pname.value = '';
@@ -213,8 +296,8 @@ function openNew() {
 }
 
 async function openEdit(id) {
-  const res = await fetch('/Supermercado/backend/public/api.php?action=product&id=' + id);
-  const p = (await res.json()).product;
+  const json = await api('product', { query: 'id=' + id });
+  const p = json.product;
 
   pid.value = p.id;
   pname.value = p.name;
@@ -240,28 +323,23 @@ async function save() {
   }
 
   bootstrap.Modal.getInstance(formModal).hide();
-  loadProducts(currentPage);
+  loadProducts();
 }
 
 async function delProduct(id) {
   if (!confirm('¿Eliminar producto?')) return;
   await api('product_delete', { method: 'POST', query: 'id=' + id });
-  loadProducts(currentPage);
+  loadProducts();
 }
 
-/* ======================
-   EVENTS
-====================== */
 newBtn.addEventListener('click', openNew);
 saveBtn.addEventListener('click', save);
 
-// EXPORTAR XML
 document.getElementById('exportXmlBtn').addEventListener('click', () => {
   window.location.href =
     '/Supermercado/backend/public/api.php?action=products_export_xml';
 });
 
-// IMPORTAR XML
 document.getElementById('importXmlInput').addEventListener('change', async e => {
   const file = e.target.files[0];
   if (!file) return;
@@ -269,15 +347,11 @@ document.getElementById('importXmlInput').addEventListener('change', async e => 
   const formData = new FormData();
   formData.append('xml', file);
 
-  const csrf = localStorage.getItem('admin_csrf');
-
   const res = await fetch(
     '/Supermercado/backend/public/api.php?action=products_import_xml',
     {
       method: 'POST',
-      headers: {
-        'X-CSRF-Token': csrf
-      },
+      headers: { 'X-CSRF-Token': localStorage.getItem('admin_csrf') },
       body: formData
     }
   );
@@ -286,8 +360,6 @@ document.getElementById('importXmlInput').addEventListener('change', async e => 
   alert(json.success ? `Importados: ${json.imported}` : json.error);
   loadProducts();
 });
-
-
 
 loadProducts();
 </script>
