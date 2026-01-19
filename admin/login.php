@@ -25,26 +25,36 @@
 </div>
 
 <script>
-document.getElementById('loginBtn').addEventListener('click', async ()=>{
-  const email = email.value;
-  const password = password.value;
+document.getElementById('loginBtn').addEventListener('click', async () => {
 
-  const res = await fetch('/Supermercado/backend/public/api.php?action=admin_login',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({email,password})
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const msg = document.getElementById('msg');
+
+  msg.innerText = '';
+
+  if (!email || !password) {
+    msg.innerText = 'Completa todos los campos';
+    return;
+  }
+
+  const res = await fetch('/Supermercado/backend/public/api.php?action=admin_login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
   });
 
   const json = await res.json();
 
-  if(json.success){
-    localStorage.setItem('admin_csrf', json.csrf || '');
-    location.href='dashboard.php';
-  }else{
-    msg.innerText='Credenciales inválidas';
+  if (json.success) {
+    localStorage.setItem('admin_csrf', json.csrf);
+    window.location.href = 'dashboard.php';
+  } else {
+    msg.innerText = json.error || 'Credenciales inválidas';
   }
 });
 </script>
+
 
 </body>
 </html>

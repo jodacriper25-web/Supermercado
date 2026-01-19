@@ -261,10 +261,15 @@ switch ($action) {
         echo json_encode(['report'=>$report]);
         break;
 
-    case 'admin_login':
-        $data = get_json_input();
-        if (adminLogin($data['email'] ?? '', $data['password'] ?? '')){ json_ok(['csrf'=>generate_csrf()]); } else { json_err('Invalid credentials',401); }
-        break;
+  case 'admin_login':
+    $data = get_json_input();
+    if (adminLogin($data['email'] ?? '', $data['password'] ?? '')){
+        json_ok(['csrf'=>generate_csrf()]);
+    } else {
+        json_err('Invalid credentials',401);
+    }
+    break;
+
 
     case 'upload_image':
         // Admin upload de imagenes (form-data)

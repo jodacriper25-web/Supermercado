@@ -1,8 +1,15 @@
--- Schema básico para Supermercado Yaruquíes
+-- ===============================
+-- BASE DE DATOS
+-- ===============================
+CREATE DATABASE IF NOT EXISTS supermercado_db
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_general_ci;
 
-CREATE DATABASE IF NOT EXISTS supermercado_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE supermercado_db;
 
+-- ===============================
+-- USUARIOS
+-- ===============================
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(120) NOT NULL,
@@ -12,12 +19,35 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+-- ===============================
+-- SESIONES ADMIN (CSRF)
+-- ===============================
+CREATE TABLE admin_sessions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  csrf_token VARCHAR(64) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  expires_at DATETIME NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ===============================
+-- CATEGORÍAS
+-- ===============================
 CREATE TABLE categories (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL UNIQUE,
   slug VARCHAR(120) NOT NULL UNIQUE
 ) ENGINE=InnoDB;
 
+-- Categoría base
+INSERT INTO categories (id, name, slug)
+VALUES (1, 'General', 'general')
+ON DUPLICATE KEY UPDATE name = name;
+
+-- ===============================
+-- PRODUCTOS
+-- ===============================
 CREATE TABLE products (
   id INT AUTO_INCREMENT PRIMARY KEY,
   category_id INT NOT NULL,
@@ -31,6 +61,9 @@ CREATE TABLE products (
   FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
+-- ===============================
+-- PEDIDOS
+-- ===============================
 CREATE TABLE orders (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -41,6 +74,9 @@ CREATE TABLE orders (
   FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB;
 
+-- ===============================
+-- ITEMS DEL PEDIDO
+-- ===============================
 CREATE TABLE order_items (
   id INT AUTO_INCREMENT PRIMARY KEY,
   order_id INT NOT NULL,
@@ -51,6 +87,9 @@ CREATE TABLE order_items (
   FOREIGN KEY (product_id) REFERENCES products(id)
 ) ENGINE=InnoDB;
 
+-- ===============================
+-- FACTURAS
+-- ===============================
 CREATE TABLE invoices (
   id INT AUTO_INCREMENT PRIMARY KEY,
   order_id INT NOT NULL,
@@ -60,14 +99,9 @@ CREATE TABLE invoices (
   FOREIGN KEY (order_id) REFERENCES orders(id)
 ) ENGINE=InnoDB;
 
-CREATE TABLE audit_logs (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT,
-  action VARCHAR(255),
-  meta JSON NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
-
+-- ===============================
+-- CUPONES
+-- ===============================
 CREATE TABLE coupons (
   id INT AUTO_INCREMENT PRIMARY KEY,
   code VARCHAR(50) NOT NULL UNIQUE,
@@ -77,7 +111,14 @@ CREATE TABLE coupons (
   expires_at DATETIME NULL
 ) ENGINE=InnoDB;
 
--- Índices y datos de ejemplo mínimos
-INSERT INTO categories (name, slug) VALUES ('Alimentos','alimentos'),('Bebidas','bebidas'),('Limpieza','limpieza'),('Verduras','verduras');
-INSERT INTO products (category_id, name, description, price, stock, featured) VALUES
-(1,'Arroz 1kg','Arroz de mesa',2.50,50,1),(2,'Refresco 1.5L','Bebida gaseosa',1.50,200,1),(3,'Jabón en polvo 1kg','Limpieza general',5.99,30,0),(4,'Lechuga','Lechuga fresca',0.99,80,0);
+-- ===============================
+-- AUDITORÍA (LOGS ADMIN)
+-- ===============================
+CREATE TABLE audit_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  action VARCHAR(255),
+  meta JSON NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
