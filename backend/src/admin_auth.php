@@ -1,34 +1,54 @@
 <?php
-session_start();
 require_once __DIR__ . '/db.php';
 
-function isAdmin(){
-    return isset($_SESSION['user']) && $_SESSION['user']['role']==='admin';
+/* =========================
+   VERIFICAR SI ES ADMIN
+========================= */
+function isAdmin(): bool {
+    return isset($_SESSION['user'])
+        && isset($_SESSION['user']['role'])
+        && $_SESSION['user']['role'] === 'admin';
 }
 
-function requireAdmin(){
-    if (!isAdmin()){ http_response_code(403); echo json_encode(['error'=>'Forbidden']); exit; }
+/* =========================
+   PROTEGER RUTAS ADMIN
+========================= */
+function requireAdmin(): void {
+    if (!isAdmin()) {
+        http_response_code(403);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Acceso denegado (solo administrador)'
+        ]);
+        exit;
+    }
 }
 
-function adminLogin($email, $password){
+/* =========================
+   LOGIN ADMIN
+========================= */
+function adminLogin(string $email, string $password): bool {
     global $pdo;
 
     $stmt = $pdo->prepare(
-      "SELECT * FROM users WHERE email = ? AND role = 'admin' LIMIT 1"
+        "SELECT id, name, email, password, role
+         FROM users
+         WHERE email = ? AND role = 'admin'
+         LIMIT 1"
     );
     $stmt->execute([$email]);
-    $admin = $stmt->fetch();
+    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$admin) return false;
-
     if (!password_verify($password, $admin['password'])) return false;
 
-    $_SESSION['admin'] = [
-        'id' => $admin['id'],
-        'name' => $admin['name'],
-        'email' => $admin['email']
+    // USAMOS LA MISMA SESIÓN QUE EL USUARIO NORMAL
+    $_SESSION['user'] = [
+        'id'    => $admin['id'],
+        'name'  => $admin['name'],
+        'email' => $admin['email'],
+        'role'  => $admin['role'] // === admin
     ];
 
     return true;
 }
-?>
