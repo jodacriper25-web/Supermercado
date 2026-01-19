@@ -1,0 +1,102 @@
+/* Variables de marca */
+:root {
+    --primary-red: #9B1C1C;
+    --bg-matte: #121212;
+    --card-bg: #1e1e1e;
+    --text-white: #FFFFFF;
+    --text-muted: #a0a0a0;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    background-color: var(--bg-matte);
+    color: var(--text-white);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Navbar Premium */
+.navbar-premium {
+    background: rgba(18, 18, 18, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-link-icon {
+    color: var(--text-white);
+    transition: var(--transition);
+}
+
+.nav-link-icon:hover {
+    color: var(--primary-red);
+}
+
+/* Hero Section */
+.hero-exclusive {
+    background: linear-gradient(180deg, #1a1a1a 0%, var(--bg-matte) 100%);
+    padding: 100px 0;
+}
+
+.category-pill {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-white);
+    transition: var(--transition);
+    background: transparent;
+}
+
+.category-pill:hover, .category-pill.active {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+    color: white;
+}
+
+/* Cards de Producto */
+.product-card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(155, 28, 28, 0.4) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+
+.img-wrapper {
+    background: #252525;
+    transition: var(--transition);
+}
+
+.product-card:hover .img-wrapper {
+    background: #2a2a2a;
+}
+
+.badge-offer {
+    background-color: var(--primary-red) !important;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 6px 12px;
+}
+
+/* Botones */
+.btn-buy {
+    background-color: var(--primary-red);
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 12px;
+    transition: var(--transition);
+}
+
+.btn-buy:hover {
+    background-color: #7a1616;
+    color: white;
+    box-shadow: 0 0 15px rgba(155, 28, 28, 0.4);
+}
+
+.cart-badge-custom {
+    background-color: var(--primary-red);
+    font-size: 0.7rem;
+}

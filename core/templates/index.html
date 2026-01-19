@@ -1,107 +1,109 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuperWix | Supermercado Online</title>
+    <title>FreshWix | Premium Grocery Store</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        :root { --wix-green: #2ecc71; --soft-gray: #f9f9f9; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; }
-        
-        .navbar-wix { border-bottom: 1px solid #eee; padding: 1.5rem 0; }
-        .hero-section { background: var(--soft-gray); padding: 80px 0; border-radius: 0 0 40px 40px; }
-        
-        /* Estilo de Tarjetas Wix */
-        .product-card { border: none; transition: transform 0.3s ease; background: none; }
-        .product-card:hover { transform: translateY(-5px); }
-        .img-container { 
-            background: var(--soft-gray); 
-            border-radius: 20px; 
-            position: relative; 
-            overflow: hidden;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .badge-sale { 
-            position: absolute; top: 15px; left: 15px; 
-            background: var(--wix-green); color: white; 
-            padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; 
-        }
-        .btn-wix { 
-            border: 1px solid #333; border-radius: 50px; 
-            padding: 8px 20px; transition: 0.3s;
-        }
-        .btn-wix:hover { background: #333; color: white; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
+
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-wix bg-white sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="#">FRESH<span class="text-success">WIX</span></a>
-            <div class="d-flex align-items-center">
-                <i class="bi bi-person fs-4 me-3"></i>
-                <div class="position-relative">
-                    <i class="bi bi-bag fs-4"></i>
-                    <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">0</span>
-                </div>
+<nav class="navbar navbar-expand-lg navbar-dark navbar-premium sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bolder fs-2" href="/">
+            <span style="color: var(--primary-red);">FRESH</span>WIX
+        </a>
+
+        <div class="d-flex align-items-center gap-4">
+            <a href="#" class="nav-link-icon fs-4 d-none d-sm-block" aria-label="Perfil">
+                <i class="bi bi-person-circle"></i>
+            </a>
+
+            <div class="position-relative cursor-pointer nav-link-icon" role="button">
+                <i class="bi bi-cart3 fs-4"></i>
+                <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill cart-badge-custom">
+                    0
+                </span>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <header class="hero-section text-center">
-        <div class="container">
-            <h1 class="display-3 fw-bold mb-3">Tu Súper, Más Fresco.</h1>
-            <p class="lead mb-4 text-muted">Entrega rápida en menos de 2 horas.</p>
-            <div class="d-flex justify-content-center gap-2">
-                {% for cat in categorias %}
-                <button class="btn btn-outline-secondary rounded-pill">{{ cat.nombre }}</button>
-                {% endfor %}
-            </div>
-        </div>
-    </header>
+<header class="hero-exclusive text-center">
+    <div class="container">
+        <h1 class="display-3 fw-800 mb-3">TU SÚPER, <span style="color: var(--primary-red);">MÁS FRESCO.</span></h1>
+        <p class="fs-5 text-secondary mb-5">Calidad premium entregada en la puerta de tu casa en 120 min.</p>
 
-    <main class="container my-5">
-        <div class="row g-4">
-            {% for p in productos %}
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card">
-                    <div class="img-container">
-                        {% if p.precio_oferta %}<span class="badge-sale">Oferta</span>{% endif %}
-                        {% if p.imagen %}
-                            <img src="{{ p.imagen.url }}" class="img-fluid p-4" alt="{{ p.nombre }}">
-                        {% else %}
-                            <i class="bi bi-basket2 fs-1 text-light"></i>
-                        {% endif %}
-                    </div>
-                    <div class="text-center mt-3">
-                        <h6 class="fw-bold mb-1">{{ p.nombre }}</h6>
-                        <div class="mb-3">
-                            {% if p.precio_oferta %}
-                                <span class="text-danger fw-bold">${{ p.precio_oferta }}</span>
-                                <span class="text-muted text-decoration-line-through small">${{ p.precio }}</span>
-                            {% else %}
-                                <span class="fw-bold">${{ p.precio }}</span>
-                            {% endif %}
-                        </div>
-                        <button class="btn btn-wix w-100" onclick="updateCart()">Agregar</button>
-                    </div>
-                </div>
-            </div>
+        <div class="d-flex justify-content-center flex-wrap gap-3">
+            <button class="btn category-pill active px-4 rounded-pill">Todos</button>
+            {% for cat in categorias %}
+                <button class="btn category-pill px-4 rounded-pill">
+                    {{ cat.nombre }}
+                </button>
             {% endfor %}
         </div>
-    </main>
+    </div>
+</header>
 
-    <script>
-        let items = 0;
-        function updateCart() {
-            items++;
-            document.getElementById('cart-count').innerText = items;
-        }
-    </script>
+<main class="container py-5">
+    <div class="row g-4">
+        {% for p in productos %}
+        <div class="col-6 col-md-4 col-lg-3">
+            <article class="card product-card h-100">
+                
+                <div class="img-wrapper position-relative ratio ratio-1x1">
+                    {% if p.precio_oferta %}
+                        <span class="badge badge-offer position-absolute top-0 start-0 m-3 z-1">
+                            -{{ p.calcular_descuento }}%
+                        </span>
+                    {% endif %}
+
+                    {% if p.imagen %}
+                        <img src="{{ p.imagen.url }}" class="img-fluid p-4 object-fit-contain" alt="{{ p.nombre }}">
+                    {% else %}
+                        <div class="d-flex align-items-center justify-content-center h-100">
+                            <i class="bi bi-image text-secondary fs-1"></i>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-body d-flex flex-column">
+                    <span class="text-uppercase small text-secondary mb-1" style="letter-spacing: 1px;">{{ p.categoria.nombre }}</span>
+                    <h5 class="card-title fw-bold mb-2">{{ p.nombre }}</h5>
+                    
+                    <div class="mt-auto d-flex align-items-baseline gap-2">
+                        {% if p.precio_oferta %}
+                            <span class="fs-4 fw-bold text-white">${{ p.precio_oferta }}</span>
+                            <span class="text-secondary text-decoration-line-through small">${{ p.precio }}</span>
+                        {% else %}
+                            <span class="fs-4 fw-bold text-white">${{ p.precio }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent border-0 p-3">
+                    <button class="btn btn-buy w-100 rounded-pill" onclick="addToCart('{{ p.id }}')">
+                        <i class="bi bi-plus-lg me-2"></i>Añadir al carrito
+                    </button>
+                </div>
+            </article>
+        </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-search fs-1 text-secondary mb-3"></i>
+                <p class="text-secondary">No encontramos productos en esta sección.</p>
+            </div>
+        {% endfor %}
+    </div>
+</main>
+
+<script src="{% static 'js/cart.js' %}"></script>
+
 </body>
 </html>
