@@ -78,6 +78,68 @@ switch ($action) {
         echo json_encode(['product' => $product]);
         break;
 
+    case 'products_export_xml':
+    requireAdmin(); // SOLO admin
+
+    // Sobrescribimos el header JSON SOLO para este case
+    header_remove('Content-Type');
+    header('Content-Type: application/xml; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="products.xml"');
+
+    $stmt = $pdo->query(
+        'SELECT id, name, price, stock, category_id FROM products ORDER BY id ASC'
+    );
+
+    $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><products></products>');
+
+    while ($p = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $prod = $xml->addChild('product');
+        foreach ($p as $k => $v) {
+            $prod->addChild($k, htmlspecialchars((string)$v));
+        }
+    }
+
+    echo $xml->asXML();
+    exit;
+
+    case 'products_import_xml':
+    requireAdmin();
+    require_csrf(); // IMPORTANTE
+
+    if (empty($_FILES['xml'])) {
+        json_err('Archivo XML no enviado');
+    }
+
+    $xml = simplexml_load_file($_FILES['xml']['tmp_name']);
+
+    if (!$xml || !isset($xml->product)) {
+        json_err('XML inválido');
+    }
+
+    $stmt = $pdo->prepare(
+        'INSERT INTO products (name, price, stock, category_id)
+         VALUES (?, ?, ?, ?)'
+    );
+
+    $count = 0;
+
+    foreach ($xml->product as $p) {
+        if (empty($p->name)) continue;
+
+        $stmt->execute([
+            (string)$p->name,
+            floatval($p->price ?? 0),
+            intval($p->stock ?? 0),
+            intval($p->category_id ?? 1)
+        ]);
+
+        $count++;
+    }
+
+    json_ok(['imported' => $count]);
+    break;
+
+
     case 'promotions':
         // Devuelve productos destacados (featured)
         $limit = max(1, min(10, intval($_GET['limit'] ?? 5)));

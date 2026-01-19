@@ -52,7 +52,16 @@
     <button id="exportProductsFilteredBtn" class="btn btn-outline-secondary btn-sm">
       Exportar filtrados
     </button>
-  </div>
+
+  <button id="exportXmlBtn" class="btn btn-outline-success btn-sm">
+    📤 Exportar XML
+  </button>
+
+  <label class="btn btn-outline-primary btn-sm mb-0">
+    📥 Importar XML
+    <input type="file" id="importXmlInput" accept=".xml" hidden>
+  </label>
+</div>
 
   <!-- TABLA -->
   <div class="card">
@@ -245,6 +254,40 @@ async function delProduct(id) {
 ====================== */
 newBtn.addEventListener('click', openNew);
 saveBtn.addEventListener('click', save);
+
+// EXPORTAR XML
+document.getElementById('exportXmlBtn').addEventListener('click', () => {
+  window.location.href =
+    '/Supermercado/backend/public/api.php?action=products_export_xml';
+});
+
+// IMPORTAR XML
+document.getElementById('importXmlInput').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('xml', file);
+
+  const csrf = localStorage.getItem('admin_csrf');
+
+  const res = await fetch(
+    '/Supermercado/backend/public/api.php?action=products_import_xml',
+    {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrf
+      },
+      body: formData
+    }
+  );
+
+  const json = await res.json();
+  alert(json.success ? `Importados: ${json.imported}` : json.error);
+  loadProducts();
+});
+
+
 
 loadProducts();
 </script>
