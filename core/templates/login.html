@@ -7,25 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | Supermercado</title>
 
-    <!-- Bootstrap -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <style>
-        /* 🔹 Fondo degradado animado */
+        /* 🔹 Fondo animado moderno */
         body {
-            background: linear-gradient(135deg, #ff4d4d, #000000);
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Inter', sans-serif;
-            animation: gradientBG 15s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            animation: gradient 15s ease infinite;
+            margin: 0;
         }
 
-        @keyframes gradientBG {
+        @keyframes gradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
@@ -33,104 +32,167 @@
 
         /* 🔹 Tarjeta login */
         .login-card {
-            background: #fff;
-            padding: 3rem 2rem;
-            border-radius: 15px;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             width: 100%;
-            max-width: 400px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 420px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-        .login-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-        }
-
-        .login-card h2 {
-            color: #ff1a1a;
-            font-weight: 700;
-            margin-bottom: 2rem;
+        .login-header {
             text-align: center;
+            margin-bottom: 2.5rem;
         }
 
-        /* 🔹 Inputs con labels flotantes */
+        .login-header h2 {
+            color: #d32f2f; /* Rojo Supermercado */
+            font-weight: 800;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        .login-header p {
+            color: #666;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* 🔹 Inputs con Floating Labels corregidos */
         .form-floating {
             position: relative;
         }
 
+        /* Espacio para el ícono a la izquierda */
         .form-floating > .form-control {
-            padding-left: 3rem;
-            height: 3rem;
-            border-radius: 0.5rem;
+            padding-left: 3.5rem; 
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            height: 3.5rem;
         }
 
         .form-floating > .form-control:focus {
-            box-shadow: 0 0 8px rgba(255, 26, 26, 0.5);
-            border-color: #ff1a1a;
+            box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.15);
+            border-color: #d32f2f;
         }
 
+        /* Mover el label para que no choque con el ícono */
+        .form-floating > label {
+            padding-left: 3.5rem;
+            color: #666;
+        }
+
+        /* Íconos estáticos (Usuario/Llave) */
         .input-icon {
             position: absolute;
-            left: 12px;
+            left: 1.2rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #ff1a1a;
-            pointer-events: none;
+            color: #d32f2f;
+            font-size: 1.2rem;
+            z-index: 5;
+            pointer-events: none; /* Para que el click pase al input */
         }
 
-        /* 🔹 Botón login */
+        /* Ícono de ver contraseña (Ojo) */
+        .password-toggle {
+            position: absolute;
+            right: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+            z-index: 10;
+        }
+        
+        .password-toggle:hover {
+            color: #d32f2f;
+        }
+
+        /* 🔹 Botón */
         .btn-login {
-            background: #ff1a1a;
+            background: #d32f2f;
+            background: linear-gradient(45deg, #d32f2f, #b71c1c);
             color: #fff;
             font-weight: 600;
-            border-radius: 0.5rem;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 1.1rem;
+            border: none;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .btn-login:hover {
-            background: #cc0000;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4);
+            color: white;
         }
 
-        /* 🔹 Mensaje de error */
         .alert-danger {
-            font-weight: 500;
             border-radius: 10px;
-            margin-bottom: 1rem;
-            text-align: center;
+            font-size: 0.9rem;
+            border: none;
+            background-color: #ffebee;
+            color: #c62828;
         }
     </style>
 </head>
 <body>
+
     <div class="login-card">
-        <h2>Iniciar Sesión - Admin</h2>
+        <div class="login-header">
+            <div class="mb-3">
+                <i class="fa-solid fa-cart-shopping fa-3x" style="color: #d32f2f;"></i>
+            </div>
+            <h2>Bienvenido</h2>
+            <p>Panel de Administración</p>
+        </div>
+
         <form method="post">
             {% csrf_token %}
 
             {% if form.errors %}
-                <div class="alert alert-danger">
+                <div class="alert alert-danger fade show" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>
                     Usuario o contraseña incorrectos.
                 </div>
             {% endif %}
 
-            <!-- Usuario -->
-            <div class="form-floating mb-3 position-relative">
-                {{ form.username|add_class:"form-control"|attr:"placeholder:Usuario" }}
-                <label for="{{ form.username.id_for_label }}">Usuario</label>
+            <div class="form-floating mb-3">
+                {{ form.username|add_class:"form-control"|attr:"placeholder:Usuario"|attr:"id:floatingInput" }}
+                <label for="floatingInput">Usuario</label>
                 <i class="fa-solid fa-user input-icon"></i>
             </div>
 
-            <!-- Contraseña -->
-            <div class="form-floating mb-4 position-relative">
-                {{ form.password|add_class:"form-control"|attr:"placeholder:Contraseña" }}
-                <label for="{{ form.password.id_for_label }}">Contraseña</label>
+            <div class="form-floating mb-4">
+                {{ form.password|add_class:"form-control"|attr:"placeholder:Contraseña"|attr:"id:floatingPassword" }}
+                <label for="floatingPassword">Contraseña</label>
                 <i class="fa-solid fa-key input-icon"></i>
+                <i class="fa-solid fa-eye password-toggle" id="togglePassword"></i>
             </div>
 
-            <button type="submit" class="btn btn-login w-100 btn-lg">Iniciar Sesión</button>
+            <button type="submit" class="btn btn-login w-100 mt-2">
+                Ingresar al Sistema
+            </button>
         </form>
     </div>
+
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordInput = document.querySelector('#floatingPassword');
+
+        togglePassword.addEventListener('click', function (e) {
+            // Alternar el tipo de atributo
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Alternar el icono del ojo
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
+
 </body>
 </html>

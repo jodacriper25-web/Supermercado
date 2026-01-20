@@ -1,7 +1,7 @@
 # core/admin.py
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Producto, Categoria, Pedido, Wishlist
+from ..models import Producto, Categoria, Pedido, Wishlist
 
 # Configuración estética del encabezado del panel
 admin.site.site_header = "FreshWix | Sistema de Gestión"

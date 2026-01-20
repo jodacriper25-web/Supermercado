@@ -18,6 +18,7 @@
 
 <body class="bg-dark text-white">
 
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark navbar-premium sticky-top shadow-lg py-3">
     <div class="container">
         <a class="navbar-brand fw-800 fs-3 text-uppercase" href="{% url 'index' %}">
@@ -62,6 +63,11 @@
                             <i class="bi bi-person me-1"></i> Iniciar Sesión
                         </button>
                     </li>
+                    <li class="nav-item">
+                        <button class="btn btn-outline-danger rounded-pill px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#registerModal">
+                            <i class="bi bi-person-plus me-1"></i> Registrarse
+                        </button>
+                    </li>
                 {% endif %}
 
                 <li class="nav-item">
@@ -75,6 +81,7 @@
     </div>
 </nav>
 
+<!-- Header -->
 <header class="hero-exclusive py-5 bg-gradient">
     <div class="container text-center py-4">
         <h1 class="display-4 fw-800 mb-3 text-uppercase">Lo mejor de Yaruquíes <br><span class="text-danger">en tu hogar.</span></h1>
@@ -96,6 +103,7 @@
     </div>
 </header>
 
+<!-- Main Productos -->
 <main class="container py-5">
     <div class="row g-4">
         {% for p in productos %}
@@ -158,6 +166,8 @@
     </div>
 </main>
 
+<!-- Modales únicos -->
+<!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark border-secondary text-white rounded-4 shadow-lg">
@@ -185,6 +195,43 @@
     </div>
 </div>
 
+<!-- Registro Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-white rounded-4 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Crear Cuenta</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'register' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="small text-secondary mb-1">Usuario</label>
+                        <input type="text" name="username" class="form-control bg-black text-white border-secondary rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-secondary mb-1">Correo electrónico</label>
+                        <input type="email" name="email" class="form-control bg-black text-white border-secondary rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-secondary mb-1">Contraseña</label>
+                        <input type="password" name="password" class="form-control bg-black text-white border-secondary rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-secondary mb-1">Repetir Contraseña</label>
+                        <input type="password" name="password2" class="form-control bg-black text-white border-secondary rounded-3" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="submit" class="btn btn-danger w-100 rounded-pill fw-bold">Registrarse</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
 <footer class="pt-5 pb-3 mt-5 bg-black text-white-50 border-top border-secondary border-opacity-25">
     <div class="container">
         <div class="row g-4 mb-4">

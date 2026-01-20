@@ -87,3 +87,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# settings.py
+
+# URL a la que redirige @login_required si el usuario no ha iniciado sesión
+LOGIN_URL = 'login'
+
+# Opcional: URL a la que redirige después de iniciar sesión
+LOGIN_REDIRECT_URL = 'admin_cliente'
