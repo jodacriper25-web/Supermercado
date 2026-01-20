@@ -9,7 +9,7 @@ def index(request):
     if categoria_id:
         productos = productos.filter(categoria_id=categoria_id)
 
-    return render(request, 'core/index.html', {
+    return render(request, 'index.html', {
         'categorias': categorias,
         'productos': productos,
     })
