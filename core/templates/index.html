@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="FreshWix - Tu supermercado premium con entrega rápida.">
-    <title>Supermercado Yaruquíes</title>
+    <title>Supermercado Yaruquíes | Calidad y Frescura</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,47 +20,54 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark navbar-premium sticky-top shadow-lg py-3">
     <div class="container">
-        <a class="navbar-brand fw-800 fs-2" href="{% url 'index' %}">
-            <span class="text-danger">SUPERMERCADO</span> YARUQUÍES
+        <a class="navbar-brand fw-800 fs-3 text-uppercase" href="{% url 'index' %}">
+            <span class="text-danger">Supermercado</span> Yaruquíes
         </a>
 
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
             <i class="bi bi-list fs-2"></i>
         </button>
 
         <div class="collapse navbar-collapse" id="navMain">
             <ul class="navbar-nav ms-auto align-items-center gap-3">
+                
                 {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fw-semibold text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle me-2 text-danger fs-5"></i>{{ user.username }}
+                        <a class="nav-link dropdown-toggle fw-semibold text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="bg-danger rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
+                                <span class="fw-bold">{{ user.username|slice:":1"|upper }}</span>
+                            </div>
+                            {{ user.username|capfirst }}
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow border-secondary fade-in">
-                            <li><a class="dropdown-item py-2" href="#"><i class="bi bi-box-seam me-2"></i>Mis Pedidos</a></li>
-                            <li><a class="dropdown-item py-2" href="#"><i class="bi bi-heart me-2"></i>Wishlist</a></li>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow border-secondary">
+                            <li><a class="dropdown-item py-2" href="#"><i class="bi bi-bag-check me-2"></i>Mis Pedidos</a></li>
                             {% if user.is_staff %}
                                 <li><hr class="dropdown-divider border-secondary"></li>
-                                <li><a class="dropdown-item text-danger py-2" href="{% url 'client:panel' %}" target="_blank"><i class="bi bi-speedometer2 me-2"></i>Perfil</a></li>
+                                <li><a class="dropdown-item text-danger py-2" href="/admin" target="_blank"><i class="bi bi-gear me-2"></i>Administración</a></li>
                             {% endif %}
                             <li><hr class="dropdown-divider border-secondary"></li>
                             <li>
                                 <form action="{% url 'logout' %}" method="post" class="m-0">
                                     {% csrf_token %}
-                                    <button type="submit" class="dropdown-item py-2"><i class="bi bi-box-arrow-right me-2"></i>Salir</button>
+                                    <button type="submit" class="dropdown-item py-2 text-danger">
+                                        <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                                    </button>
                                 </form>
                             </li>
                         </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <button class="btn btn-outline-light rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#loginModal">Conectarse</button>
+                        <button class="btn btn-outline-light rounded-pill px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i class="bi bi-person me-1"></i> Iniciar Sesión
+                        </button>
                     </li>
                 {% endif %}
 
                 <li class="nav-item">
-                    <a class="nav-link position-relative px-2" href="#" aria-label="Carrito de compras">
-                        <i class="bi bi-bag-heart fs-4"></i>
-                        <span id="cart-count" class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">0</span>
+                    <a class="nav-link position-relative px-2" href="#" aria-label="Carrito">
+                        <i class="bi bi-cart3 fs-4"></i>
+                        <span id="cart-count" class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill border border-dark">0</span>
                     </a>
                 </li>
             </ul>
@@ -71,17 +77,18 @@
 
 <header class="hero-exclusive py-5 bg-gradient">
     <div class="container text-center py-4">
-        <h1 class="display-3 fw-800 mb-3 text-uppercase">El Súper en <span class="text-danger">tu puerta.</span></h1>
+        <h1 class="display-4 fw-800 mb-3 text-uppercase">Lo mejor de Yaruquíes <br><span class="text-danger">en tu hogar.</span></h1>
+        <p class="lead text-white-50 mb-4">Productos frescos y precios justos, sin salir de casa.</p>
         
         <div class="col-md-7 mx-auto mb-5">
-            <form action="#" method="get" class="input-group input-group-lg shadow-lg rounded-pill overflow-hidden">
-                <span class="input-group-text bg-white border-0"><i class="bi bi-search text-dark"></i></span>
-                <input type="search" name="q" class="form-control border-0" placeholder="Busca productos frescos, marcas o categorías..." aria-label="Buscar">
+            <form action="" method="get" class="input-group input-group-lg shadow-lg rounded-pill overflow-hidden border border-secondary">
+                <span class="input-group-text bg-dark border-0 text-white"><i class="bi bi-search"></i></span>
+                <input type="search" name="q" class="form-control bg-dark text-white border-0" placeholder="¿Qué necesitas hoy?" aria-label="Buscar">
             </form>
         </div>
 
         <div class="d-flex justify-content-center flex-wrap gap-2">
-            <a href="{% url 'index' %}" class="btn category-pill {% if not request.GET.categoria %}active{% endif %} px-4 rounded-pill">Todo el Catálogo</a>
+            <a href="{% url 'index' %}" class="btn category-pill {% if not request.GET.categoria %}active{% endif %} px-4 rounded-pill">Todo</a>
             {% for cat in categorias %}
                 <a href="?categoria={{ cat.id }}" class="btn category-pill {% if request.GET.categoria == cat.id|stringformat:'s' %}active{% endif %} px-4 rounded-pill">{{ cat.nombre }}</a>
             {% endfor %}
@@ -94,149 +101,115 @@
         {% for p in productos %}
         <div class="col-6 col-md-4 col-lg-3">
             <article class="card product-card h-100 bg-transparent border-0">
+                
                 <div class="img-wrapper position-relative ratio ratio-1x1 rounded-4 overflow-hidden shadow-sm bg-secondary-subtle">
-                    <button class="btn-wishlist position-absolute top-0 end-0 m-3 z-2 border-0 shadow-sm" title="Añadir a deseos">
-                        <i class="bi bi-heart"></i>
-                    </button>
-
+                    
                     {% if p.precio_oferta %}
                         <span class="badge-offer position-absolute top-0 start-0 m-3 z-2">OFERTA</span>
                     {% endif %}
 
-                    {% if p.stock <= 0 %}
+                    {% if p.existencia_bodega <= 0 %}
                         <div class="out-of-stock-overlay z-1 d-flex align-items-center justify-content-center">
-                            <span class="fw-bold">AGOTADO</span>
+                            <span class="fw-bold bg-dark px-3 py-1 rounded">AGOTADO</span>
                         </div>
                     {% endif %}
 
                     {% if p.imagen %}
                         <img src="{{ p.imagen.url }}" class="img-fluid p-4 object-fit-contain transition-transform" alt="{{ p.nombre }}" loading="lazy">
                     {% else %}
-                        <div class="d-flex align-items-center justify-content-center h-100">
-                            <i class="bi bi-box-seam text-dark opacity-25 fs-1"></i>
+                        <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                            <i class="bi bi-image fs-1 opacity-25"></i>
                         </div>
                     {% endif %}
                 </div>
 
                 <div class="card-body px-1 pt-3 text-start d-flex flex-column">
-                    <small class="text-danger fw-bold text-uppercase ls-1">{{ p.categoria.nombre }}</small>
-                    <h6 class="card-title fw-semibold text-white mt-1 mb-2">{{ p.nombre }}</h6>
+                    <small class="text-danger fw-bold text-uppercase ls-1" style="font-size: 0.7rem;">{{ p.categoria.nombre }}</small>
+                    <h6 class="card-title fw-bold text-white mt-1 mb-2 text-truncate">{{ p.nombre }}</h6>
                     
                     <div class="mt-auto d-flex align-items-center gap-2 mb-3">
                         {% if p.precio_oferta %}
-                            <span class="fs-4 fw-bold text-white">${{ p.precio_oferta }}</span>
-                            <span class="text-secondary text-decoration-line-through small">${{ p.precio }}</span>
+                            <span class="fs-5 fw-bold text-white">${{ p.precio_oferta }}</span>
+                            <span class="text-secondary text-decoration-line-through small">${{ p.precio_a }}</span>
                         {% else %}
-                            <span class="fs-4 fw-bold text-white">${{ p.precio }}</span>
+                            <span class="fs-5 fw-bold text-white">${{ p.precio_a }}</span>
                         {% endif %}
                     </div>
 
                     <button class="btn btn-buy w-100 rounded-pill py-2 fw-bold" 
                             onclick="addToCart('{{ p.id }}', '{{ p.nombre }}')"
-                            {% if p.stock <= 0 %}disabled{% endif %}>
-                        {% if p.stock > 0 %}<i class="bi bi-plus-lg me-1"></i> Añadir{% else %}Sin Stock{% endif %}
+                            {% if p.existencia_bodega <= 0 %}disabled{% endif %}>
+                        {% if p.existencia_bodega > 0 %}
+                            <i class="bi bi-cart-plus me-1"></i> Agregar
+                        {% else %}
+                            Sin Stock
+                        {% endif %}
                     </button>
                 </div>
             </article>
         </div>
         {% empty %}
             <div class="col-12 text-center py-5">
-                <i class="bi bi-inboxes fs-1 text-secondary mb-3"></i>
-                <h4 class="text-secondary">Lo sentimos, no hay productos disponibles en esta categoría.</h4>
+                <i class="bi bi-search fs-1 text-secondary mb-3"></i>
+                <h4 class="text-secondary">No encontramos productos en esta sección.</h4>
                 <a href="{% url 'index' %}" class="btn btn-outline-danger rounded-pill mt-3">Ver todo el catálogo</a>
             </div>
         {% endfor %}
     </div>
 </main>
 
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark border-secondary text-white rounded-4 shadow-lg">
             <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold" id="loginModalLabel">Bienvenido de nuevo</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title fw-bold">Acceso Clientes</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form method="post" action="{% url 'login' %}">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="username" class="small text-secondary mb-2">Usuario o Email</label>
-                        <input type="text" id="username" name="username" class="form-control bg-secondary-subtle border-0 py-2" required>
+                        <label class="small text-secondary mb-1">Usuario</label>
+                        <input type="text" name="username" class="form-control bg-black text-white border-secondary rounded-3" required>
                     </div>
-                    <div class="mb-2">
-                        <label for="password" class="small text-secondary mb-2">Contraseña</label>
-                        <input type="password" id="password" name="password" class="form-control bg-secondary-subtle border-0 py-2" required>
+                    <div class="mb-3">
+                        <label class="small text-secondary mb-1">Contraseña</label>
+                        <input type="password" name="password" class="form-control bg-black text-white border-secondary rounded-3" required>
                     </div>
                 </div>
-                <div class="modal-footer border-0 p-4 pt-0 text-center">
-                    <button type="submit" class="btn btn-danger w-100 py-3 rounded-pill fw-bold shadow">Entrar a la tienda</button>
-                    <p class="w-100 small mt-3 text-secondary">¿No tienes cuenta? <a href="#" class="text-white text-decoration-none border-bottom border-danger">Regístrate</a></p>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="submit" class="btn btn-danger w-100 rounded-pill fw-bold">Ingresar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<footer class="footer-premium pt-5 pb-3 mt-5">
+<footer class="pt-5 pb-3 mt-5 bg-black text-white-50 border-top border-secondary border-opacity-25">
     <div class="container">
-        <div class="row g-4 mb-5">
+        <div class="row g-4 mb-4">
             <div class="col-lg-4">
-                <a class="navbar-brand fw-800 fs-2 mb-3 d-block" href="/">
-                    <span class="text-danger">FRESH</span>WIX
-                </a>
-                <p class="text-secondary pe-lg-5">
-                    Selección premium de productos locales y frescos. Calidad garantizada en menos de 2 horas en la puerta de tu hogar.
-                </p>
-                <div class="social-icons d-flex gap-3 mt-4">
-                    <a href="#" class="text-white fs-5" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-white fs-5" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="text-white fs-5" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
-                </div>
+                <h5 class="fw-800 text-white mb-3 text-uppercase">Supermercado <span class="text-danger">Yaruquíes</span></h5>
+                <p class="small">Su supermercado de confianza en Riobamba. Variedad, economía y atención personalizada.</p>
             </div>
-
-            <div class="col-lg-2 col-md-4">
-                <h6 class="fw-bold text-uppercase mb-4">Navegación</h6>
-                <ul class="list-unstyled footer-links">
-                    <li><a href="{% url 'index' %}" class="text-secondary text-decoration-none">Inicio</a></li>
-                    <li><a href="#" class="text-secondary text-decoration-none">Catálogo</a></li>
-                    <li><a href="#" class="text-secondary text-decoration-none">Ofertas</a></li>
+            <div class="col-lg-4">
+                <h6 class="text-white fw-bold mb-3">Contacto</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><i class="bi bi-geo-alt text-danger me-2"></i> Yaruquíes, Riobamba</li>
+                    <li class="mb-2"><i class="bi bi-whatsapp text-danger me-2"></i> 099 123 4567</li>
                 </ul>
             </div>
-
-            <div class="col-lg-3 col-md-4">
-                <h6 class="fw-bold text-uppercase mb-4">Soporte</h6>
-                <ul class="list-unstyled footer-links">
-                    <li><a href="#" class="text-secondary text-decoration-none">Centro de Ayuda</a></li>
-                    <li><a href="#" class="text-secondary text-decoration-none">Términos legales</a></li>
-                    <li><a href="#" class="text-secondary text-decoration-none">Privacidad</a></li>
-                </ul>
-            </div>
-
-            <div class="col-lg-3 col-md-4 text-start">
-                <h6 class="fw-bold text-uppercase mb-4">Contáctanos</h6>
-                <address class="text-secondary small mb-4">
-                    <p class="mb-2"><i class="bi bi-geo-alt me-2 text-danger"></i> Av. Principal 123, Riobamba, EC</p>
-                    <p class="mb-2"><i class="bi bi-telephone me-2 text-danger"></i> +593 99 999 9999</p>
-                    <p><i class="bi bi-envelope me-2 text-danger"></i> hola@freshwix.com</p>
-                </address>
-                <h6 class="small fw-bold text-uppercase text-secondary mb-3">Pagos Seguros</h6>
-                <div class="payment-methods d-flex gap-2 fs-3 text-secondary">
-                    <i class="bi bi-credit-card" title="Tarjeta"></i>
-                    <i class="bi bi-paypal" title="PayPal"></i>
-                    <i class="bi bi-stripe" title="Stripe"></i>
+            <div class="col-lg-4 text-lg-end">
+                <h6 class="text-white fw-bold mb-3">Aceptamos</h6>
+                <div class="fs-3 text-secondary d-flex justify-content-lg-end gap-2">
+                    <i class="bi bi-cash-coin" title="Efectivo"></i>
+                    <i class="bi bi-credit-card" title="Tarjetas"></i>
+                    <i class="bi bi-phone" title="Transferencia"></i>
                 </div>
             </div>
         </div>
-
-        <hr class="border-secondary opacity-25">
-        
-        <div class="row pt-2">
-            <div class="col-md-6 text-center text-md-start">
-                <p class="small text-secondary mb-0">© 2026 Supermercado Yaruquíes. Todos los derechos reservados.</p>
-            </div>
-            <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
-                <p class="small text-secondary mb-0">Desarrollado profesionalmente con <i class="bi bi-heart-fill text-danger"></i> en Django</p>
-            </div>
+        <div class="text-center small border-top border-secondary border-opacity-25 pt-3">
+            <p class="mb-0">© 2026 Supermercado Yaruquíes. Todos los derechos reservados.</p>
         </div>
     </div>
 </footer>
