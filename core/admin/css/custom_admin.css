@@ -1,0 +1,36 @@
+/* core/static/admin/css/custom_admin.css */
+:root {
+    --primary-red: #9B1C1C;
+    --matte-black: #121212;
+    --white: #ffffff;
+}
+
+/* Encabezado del Admin */
+#header {
+    background: var(--matte-black) !important;
+    border-bottom: 4px solid var(--primary-red);
+    color: var(--white);
+}
+
+/* Botones y Cabeceras de Módulos */
+.module h2, .module caption, .button, input[type=submit] {
+    background: var(--primary-red) !important;
+    border: none !important;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+/* Migas de pan (Breadcrumbs) */
+div.breadcrumbs {
+    background: #1a1a1a !important;
+    color: var(--white) !important;
+}
+
+div.breadcrumbs a {
+    color: var(--primary-red) !important;
+}
+
+/* Filas al pasar el mouse */
+tr:hover td {
+    background-color: rgba(155, 28, 28, 0.05) !important;
+}

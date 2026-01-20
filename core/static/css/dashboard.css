@@ -1,0 +1,50 @@
+/* Dashboard Premium Styles */
+.card-header.bg-danger {
+    background: linear-gradient(135deg, #9B1C1C 0%, #7a1616 100%) !important;
+}
+
+.list-group-item.active {
+    background-color: rgba(155, 28, 28, 0.05) !important;
+    color: #9B1C1C !important;
+    border-left: 4px solid #9B1C1C !important;
+    font-weight: 700;
+}
+
+.list-group-item {
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.list-group-item:hover:not(.active) {
+    background-color: #f8f9fa;
+    padding-left: 30px !important;
+}
+
+.icon-shape {
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px !important;
+}
+
+/* Sombras suaves para modo claro/oscuro */
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.035) !important;
+}
+
+/* Transición suave para tablas */
+.table tr {
+    transition: background-color 0.1s ease;
+}
+
+.table tr:hover {
+    background-color: rgba(0,0,0,0.01) !important;
+}
+
+/* Estilo de los badges personalizados */
+.badge {
+    font-weight: 600;
+    font-size: 0.75rem;
+}
