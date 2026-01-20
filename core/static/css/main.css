@@ -1,7 +1,7 @@
 :root {
     --primary-red: #9B1C1C;
-    --matte-black: #121212;
-    --glass-bg: rgba(18, 18, 18, 0.85);
+    --matte-black: #545252;
+    --glass-bg: rgba(18, 18, 18, 0.344);
 }
 
 body {
