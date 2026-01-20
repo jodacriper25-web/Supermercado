@@ -8,6 +8,58 @@ body {
     background-color: var(--matte-black);
     font-family: 'Inter', sans-serif;
 }
+.hover-zoom:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+}
+
+.hover-pulse:hover {
+    animation: pulse 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+}
+
+.badge-offer {
+    background: #dc3545;
+    color: white;
+    padding: 0.35em 0.6em;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 0.35rem;
+}
+
+.out-of-stock-overlay {
+    background: rgba(0,0,0,0.7);
+}
+.hover-zoom:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+}
+
+.hover-pulse:hover {
+    animation: pulse 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+}
+
+.badge-offer {
+    background: #dc3545;
+    color: white;
+    padding: 0.35em 0.6em;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 0.35rem;
+}
+
+.out-of-stock-overlay {
+    background: rgba(0,0,0,0.7);
+}
 
 /* Navbar Premium */
 .navbar-premium {
