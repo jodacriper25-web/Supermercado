@@ -4,22 +4,32 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from core.models import Categoria, Producto
 
+# ---------------------------
 # Página principal
+# ---------------------------
 def index(request):
+    # Obtener todas las categorías y productos
     categorias = Categoria.objects.all()
     productos = Producto.objects.all()
 
-    # Filtrar productos por categoría si se pasa parámetro
+    # Filtrar productos por categoría si se pasa parámetro GET
     categoria_id = request.GET.get('categoria')
     if categoria_id:
         productos = productos.filter(categoria_id=categoria_id)
 
+    # Rango para el carrusel de imágenes (hero)
+    hero_range = range(1, 4)  # Esto generará 1, 2, 3
+
     return render(request, 'index.html', {
         'categorias': categorias,
         'productos': productos,
+        'hero_range': hero_range
     })
 
+
+# ---------------------------
 # Registro de cliente
+# ---------------------------
 def register_view(request):
     if request.method == "POST":
         username = request.POST.get('username')
@@ -36,6 +46,10 @@ def register_view(request):
             messages.error(request, "El nombre de usuario ya existe")
             return redirect('index')
 
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "El correo electrónico ya está registrado")
+            return redirect('index')
+
         # Crear usuario
         user = User.objects.create_user(username=username, email=email, password=password)
         user.is_staff = False
@@ -46,23 +60,33 @@ def register_view(request):
         messages.success(request, "Registro exitoso. ¡Bienvenido!")
         return redirect('index')
 
+    # Si no es POST, redirigir a la página principal
     return redirect('index')
 
-# Login
+
+# ---------------------------
+# Login de usuario
+# ---------------------------
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            messages.success(request, f"¡Bienvenido {user.username}!")
             return redirect('index')
         else:
             messages.error(request, "Usuario o contraseña incorrectos")
             return redirect('index')
+    
+    # Si no es POST, redirigir a la página principal
     return redirect('index')
 
-# Logout
+
+# ---------------------------
+# Logout de usuario
+# ---------------------------
 def logout_view(request):
     logout(request)
     messages.success(request, "Has cerrado sesión correctamente")
