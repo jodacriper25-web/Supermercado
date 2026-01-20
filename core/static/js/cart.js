@@ -1,15 +1,13 @@
-let cartCount = 0;
+function addToCart(productId, productName) {
+    // Aquí podrías disparar una petición AJAX a tu backend de Django
+    let countEl = document.getElementById('cart-count');
+    let current = parseInt(countEl.innerText);
+    countEl.innerText = current + 1;
 
-function addToCart(productId) {
-    cartCount++;
-    document.getElementById("cart-count").innerText = cartCount;
+    // Animación de feedback
+    countEl.classList.add('animate-pop');
+    setTimeout(() => countEl.classList.remove('animate-pop'), 300);
 
-    const btn = event.target;
-    btn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Añadido';
-    btn.disabled = true;
-
-    setTimeout(() => {
-        btn.innerHTML = '<i class="bi bi-plus-lg me-2"></i>Añadir al carrito';
-        btn.disabled = false;
-    }, 1500);
+    // Toast o Alerta profesional
+    console.log(`Logística: Añadido ${productName} (ID: ${productId})`);
 }

@@ -1,10 +1,15 @@
 from django.shortcuts import render
-from .models import Producto, Categoria
+from .models import Categoria, Producto
 
 def index(request):
-    productos = Producto.objects.all()
     categorias = Categoria.objects.all()
-    return render(request, 'index.html', {
-        'productos': productos,
-        'categorias': categorias
+    productos = Producto.objects.all()
+
+    categoria_id = request.GET.get('categoria')
+    if categoria_id:
+        productos = productos.filter(categoria_id=categoria_id)
+
+    return render(request, 'core/index.html', {
+        'categorias': categorias,
+        'productos': productos
     })
