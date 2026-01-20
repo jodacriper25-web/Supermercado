@@ -11,5 +11,5 @@ def index(request):
 
     return render(request, 'core/index.html', {
         'categorias': categorias,
-        'productos': productos
+        'productos': productos,
     })
