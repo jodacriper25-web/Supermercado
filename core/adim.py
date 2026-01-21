@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import Producto, Categoria, Pedido, Wishlist
 
-admin.site.site_header = "FreshWix | Sistema de Gestión"
-admin.site.site_title = "FreshWix Admin"
+admin.site.site_header = "Supermercado | Sistema de Gestión"
+admin.site.site_title = "Yaruquies Admin"
 admin.site.index_title = "Gestión de Supermercado Premium"
 
 class BaseAdmin(admin.ModelAdmin):
