@@ -3,28 +3,42 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from core.models import Categoria, Producto
+from django.db.models import Q
+from django.conf import settings
+import os
+import json
 
 # ---------------------------
 # Página principal
 # ---------------------------
-def index(request):
-    # Obtener todas las categorías y productos
-    categorias = Categoria.objects.all()
-    productos = Producto.objects.all()
 
-    # Filtrar productos por categoría si se pasa parámetro GET
+
+def index(request):
+    categorias = Categoria.objects.all()
+    productos = Producto.objects.filter(activo=True)
+
+    # Filtro por categoría (opcional)
     categoria_id = request.GET.get('categoria')
     if categoria_id:
         productos = productos.filter(categoria_id=categoria_id)
 
-    # Rango para el carrusel de imágenes (hero)
-    hero_range = range(1, 4)  # Esto generará 1, 2, 3
+    # Búsqueda (opcional)
+    q = request.GET.get('q')
+    if q:
+        productos = productos.filter(
+            Q(nombre__icontains=q) | Q(codigo_producto__icontains=q) | Q(categoria__nombre__icontains=q)
+        )
 
     return render(request, 'index.html', {
         'categorias': categorias,
         'productos': productos,
-        'hero_range': hero_range
+        'categoria_activa': categoria_id,
+        'q': q or '',
     })
+
+
+def quienes_somos(request):
+    return render(request, 'quienes_somos.html')
 
 
 # ---------------------------

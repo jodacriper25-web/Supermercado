@@ -76,6 +76,21 @@ class Pedido(models.Model):
         if "yaruquies" not in self.direccion.lower() and "yaruquies" not in self.barrio.lower():
             raise ValidationError("FreshWix: Por el momento solo realizamos entregas en el sector de Yaruquíes.")
 
+class DetallePedido(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
+    producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
+    cantidad = models.PositiveIntegerField(default=1)
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    creado = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        self.subtotal = self.cantidad * self.precio_unitario
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.cantidad} x {self.producto.nombre} (Pedido #{self.pedido.id})"
+
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)

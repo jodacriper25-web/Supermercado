@@ -1,3 +1,4 @@
+
 :root {
     --primary-red: #9B1C1C;
     --matte-black: #545252;
@@ -66,6 +67,43 @@ body {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Hero / Banner */
+.hero-slide {
+    position: relative;
+    height: 55vh;
+    min-height: 320px;
+    max-height: 760px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+}
+
+/* Dark / red overlay to tint the image and create consistent look */
+.hero-slide .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(155,28,28,0.7), rgba(122,22,22,0.75));
+    z-index: 1;
+}
+
+/* Caption on top of overlay */
+.hero-caption {
+    position: relative;
+    z-index: 2;
+    left: 6%;
+    right: auto;
+    top: 20%;
+    text-align: left;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-slide { height: 40vh; min-height: 220px; }
+    .hero-caption .display-4 { font-size: 1.75rem; }
 }
 
 /* Card Effects */

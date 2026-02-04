@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Regístrate para Comprar | FreshWix{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+            <!-- Icono de registro -->
+            <div class="mb-4">
+                <i class="bi bi-person-plus-fill text-danger" style="font-size: 5rem;"></i>
+            </div>
+            
+            <h2 class="fw-bold mb-3">¡Regístrate para Completar tu Pedido!</h2>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <p class="lead text-white-50 mb-4">
+                Para finalizar tu compra, necesitas tener una cuenta en FreshWix. 
+                El registro es rápido, gratuito y solo te tomará unos segundos.
+            </p>
+            
+            <!-- Beneficios de registrarse -->
+            <div class="card bg-dark border-secondary mb-4 text-start">
+                <div class="card-body">
+                    <h6 class="text-danger fw-bold mb-3">Beneficios de registrarte:</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Historial de tus pedidos</li>
+                        <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Proceso de compra más rápido</li>
+                        <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Recibe ofertas exclusivas</li>
+                        <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Seguimiento de tus entregas</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="d-flex flex-column gap-3">
+                <button class="btn btn-danger btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#registerModal">
+                    <i class="bi bi-person-plus me-2"></i>Crear mi Cuenta Ahora
+                </button>
+                
+                <button class="btn btn-outline-light btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Ya tengo cuenta, Iniciar Sesión
+                </button>
+                
+                <a href="{% url 'index' %}" class="btn btn-link text-white-50">
+                    <i class="bi bi-arrow-left me-1"></i>Volver al catálogo
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modales de Login y Registro (inline para esta página) -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-white rounded-4 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Acceder a FreshWix</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="small text-secondary mb-1">Usuario</label>
+                        <input type="text" name="username" class="form-control bg-black text-white border-secondary rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-secondary mb-1">Contraseña</label>
+                        <input type="password" name="password" class="form-control bg-black text-white border-secondary rounded-3" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="submit" class="btn btn-danger w-100 rounded-pill fw-bold">Ingresar</button>
+                    <p class="w-100 text-center small mt-3 text-white-50">
+                        ¿Nuevo aquí? <a href="#" class="text-white fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Crear cuenta</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-white rounded-4 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Crear Cuenta</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'register' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="small text-secondary mb-1">Usuario</label>
+                        <input type="text" name="username" class="form-control bg-black text-white border-secondary rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-secondary mb-1">Correo electrónico</label>
+                        <input type="email" name="email" class="form-control bg-black text-white border-secondary rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-secondary mb-1">Contraseña</label>
+                        <input type="password" name="password" class="form-control bg-black text-white border-secondary rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-secondary mb-1">Repetir Contraseña</label>
+                        <input type="password" name="password2" class="form-control bg-black text-white border-secondary rounded-3" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="submit" class="btn btn-danger w-100 rounded-pill fw-bold">Registrarse</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

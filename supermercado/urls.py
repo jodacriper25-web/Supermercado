@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 # Importar views
 from core import views
-from core.views_pedido import crear_pedido, pedidos_json
+from core.views_pedido import crear_pedido, pedidos_json, checkout_view, admin_import_xml
 
 urlpatterns = [
     # Admin de Django
@@ -14,14 +14,21 @@ urlpatterns = [
     # Página principal
     path('', views.index, name='index'),
 
+    # Quiénes Somos
+    path('quienes-somos/', views.quienes_somos, name='quienes_somos'),
+
     # Registro y autenticación
     path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
-    # Pedidos
+    # Checkout y Pedidos
+    path('checkout/', checkout_view, name='checkout'),
     path('pedido/crear/', crear_pedido, name='pedido'),
     path('pedidos/json/', pedidos_json, name='pedidos_json'),
+
+    # Admin oculto - Importación de XML
+    path('admin-importar-xml/', admin_import_xml, name='admin_import_xml'),
 ]
 
 # Servir media y static en desarrollo
