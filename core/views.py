@@ -264,23 +264,21 @@ def categoria_view(request, slug):
         query = Q()
         for termino in terminos:
             query |= Q(categoria__nombre__icontains=termino)
-        productos = Producto.objects.filter(activo=True).filter(query)
+        productos = list(Producto.objects.filter(activo=True).filter(query))
         # Usar el nombre de la categoría del mapping
         categoria_nombre = dict(CATEGORIAS_PRINCIPALES).get(slug, slug.replace('-', ' ').title())
     else:
         # Fallback: buscar por icontains directo
-        productos = Producto.objects.filter(
+        productos = list(Producto.objects.filter(
             activo=True,
             categoria__nombre__icontains=slug.replace('-', ' ')
-        )
+        ))
         categoria_nombre = slug.replace('-', ' ').title()
     
-    return render(request, 'index.html', {
+    return render(request, 'category.html', {
         'categorias': categorias,
         'categorias_principales': CATEGORIAS_PRINCIPALES,
         'productos': productos,
-        'hero_images': [],
         'categoria_activa': slug,
         'categoria_nombre': categoria_nombre,
-        'q': '',
     })
