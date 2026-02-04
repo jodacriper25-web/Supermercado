@@ -93,7 +93,60 @@
         {% endblock %}
     </main>
 
+    <!-- Botón flotante WhatsApp y TikTok -->
+    <a href="https://wa.me/593983612109?text=Hola%20Supermercado%20Yaruquíes,%20tengo%20una%20duda." class="whatsapp-float" target="_blank" title="Contáctanos por WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+    <a href="https://www.tiktok.com/@supermercadoyaruquies" class="tiktok-float" target="_blank" title="Síguenos en TikTok">
+        <i class="bi bi-tiktok"></i>
+    </a>
+
     <footer class="footer-premium pt-5 pb-3 mt-auto bg-black text-white-50 border-top border-secondary border-opacity-25">
+        </body>
+        <style>
+        .whatsapp-float {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            z-index: 9999;
+            background: #25d366;
+            color: #fff;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+        }
+        .whatsapp-float:hover {
+            background: #128c7e;
+            color: #fff;
+        }
+        .tiktok-float {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            background: #000;
+            color: #fff;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+        }
+        .tiktok-float:hover {
+            background: #222;
+            color: #fff;
+        }
+        </style>
         <div class="container">
             <div class="row g-4 mb-5">
                 <div class="col-lg-4">

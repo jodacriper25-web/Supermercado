@@ -5,7 +5,9 @@ from django.conf.urls.static import static
 
 # Importar views
 from core import views
+
 from core.views_pedido import crear_pedido, pedidos_json, checkout_view, admin_import_xml
+from core.views_dashboard import dashboard_admin
 
 urlpatterns = [
     # Admin de Django
@@ -13,6 +15,9 @@ urlpatterns = [
 
     # Página principal
     path('', views.index, name='index'),
+
+    # Dashboard de administración personalizado
+    path('dashboard-admin/', dashboard_admin, name='dashboard_admin'),
 
     # Quiénes Somos
     path('quienes-somos/', views.quienes_somos, name='quienes_somos'),
