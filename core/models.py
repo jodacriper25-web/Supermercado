@@ -74,7 +74,7 @@ class Pedido(models.Model):
     def clean(self):
         # Validación de zona geográfica específica solicitada
         if "yaruquies" not in self.direccion.lower() and "yaruquies" not in self.barrio.lower():
-            raise ValidationError("FreshWix: Por el momento solo realizamos entregas en el sector de Yaruquíes.")
+            raise ValidationError("Supermercado Yaruquíes: Por el momento solo realizamos entregas en el sector de Yaruquíes.")
 
 class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')

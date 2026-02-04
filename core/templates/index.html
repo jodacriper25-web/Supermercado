@@ -109,7 +109,7 @@
         <div class="carousel-inner">
             {% for slide in hero_images %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="{{ slide.interval }}">
-                <div class="hero-slide" style="background-image: url('{% static 'img/hero/' %}{{ slide.filename }}')">
+                <div class="hero-slide" style="background-image: url({% static 'img/hero/' %}{{ slide.filename }});">
                     <div class="hero-overlay"></div>
                     <div class="carousel-caption d-none d-md-block text-start hero-caption">
                         <h1 class="display-4 fw-bold text-uppercase text-white">Lo mejor de Yaruquíes</h1>

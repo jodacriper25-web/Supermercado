@@ -75,10 +75,10 @@
     const ventasChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: {{ labels|safe }},
+            labels: JSON.parse('{{ labels|escapejs }}'),
             datasets: [{
                 label: 'Ventas ($)',
-                data: {{ data|safe }},
+                data: JSON.parse('{{ data|escapejs }}'),
                 backgroundColor: 'rgba(220,53,69,0.7)',
                 borderColor: 'rgba(220,53,69,1)',
                 borderWidth: 1

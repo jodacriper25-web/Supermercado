@@ -1,6 +1,6 @@
 // Carrito de compras usando localStorage
 
-const CART_KEY = 'freshwix_cart';
+const CART_KEY = 'supermercado_yaruquies_cart';
 
 // Obtener carrito del localStorage
 function getCart() {
@@ -83,7 +83,7 @@ function showToast(message, type = 'info') {
         <div id="${toastId}" class="toast ${bgClass} text-white" role="alert">
             <div class="toast-header ${bgClass} text-white">
                 <i class="bi ${icon} me-2"></i>
-                <strong class="me-auto">FreshWix</strong>
+                <strong class="me-auto">Supermercado Yaruquíes</strong>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
             </div>
             <div class="toast-body">
@@ -92,7 +92,7 @@ function showToast(message, type = 'info') {
         </div>
     `;
     
-    toastContainer.insertAdjacentHTML('insertAdjacentHTML', toastHtml);
+    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
     const toastEl = document.getElementById(toastId);
     const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
     toast.show();
