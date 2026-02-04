@@ -8,6 +8,16 @@ from django.conf import settings
 import os
 import json
 
+# Categorías principales para filtrar
+CATEGORIAS_PRINCIPALES = [
+    ('CONSUMO', 'Consumo'),
+    ('LIMPIEZA Y HOGAR', 'Limpieza y Hogar'),
+    ('BEBIDAS', 'Bebidas'),
+    ('CONGELADOS', 'Congelados'),
+    ('CONFITERIA', 'Confitería'),
+]
+
+
 # ---------------------------
 # Página principal
 # ---------------------------
@@ -17,12 +27,12 @@ def index(request):
     categorias = Categoria.objects.all()
     productos = Producto.objects.filter(activo=True)
 
-    # Filtro por categoría (opcional)
-    categoria_id = request.GET.get('categoria')
-    if categoria_id:
-        productos = productos.filter(categoria_id=categoria_id)
+    # Filtro por categoría
+    categoria_slug = request.GET.get('categoria')
+    if categoria_slug:
+        productos = productos.filter(categoria__slug=categoria_slug)
 
-    # Búsqueda (opcional)
+    # Búsqueda
     q = request.GET.get('q')
     if q:
         productos = productos.filter(
@@ -31,13 +41,17 @@ def index(request):
 
     return render(request, 'index.html', {
         'categorias': categorias,
+        'categorias_principales': CATEGORIAS_PRINCIPALES,
         'productos': productos,
-        'categoria_activa': categoria_id,
+        'categoria_activa': categoria_slug,
         'q': q or '',
     })
 
 
 def quienes_somos(request):
+    """
+    Página Quiénes Somos - Información del Supermercado Yaruquíes
+    """
     return render(request, 'quienes_somos.html')
 
 

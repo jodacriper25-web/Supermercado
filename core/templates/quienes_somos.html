@@ -1,22 +1,213 @@
 {% extends 'base.html' %}
+
 {% block title %}Quiénes Somos | Supermercado Yaruquíes{% endblock %}
+
 {% block content %}
-<section class="container py-5">
-    <div class="row align-items-center">
-        <div class="col-md-6 mb-4 mb-md-0">
-            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" class="img-fluid rounded-4 shadow" alt="Supermercado Yaruquíes">
+<!-- Hero Section -->
+<section class="hero-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold text-danger mb-3">Quiénes Somos</h1>
+                <p class="lead text-white-50">
+                    Más de 20 años al servicio de las familias de Yaruquíes y Riobamba, 
+                    comprometidos con la calidad, el ahorro y la atención personalizada.
+                </p>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="bi bi-shop text-danger" style="font-size: 8rem;"></i>
+            </div>
         </div>
-        <div class="col-md-6">
-            <h1 class="fw-bold mb-3 text-danger">Quiénes Somos</h1>
-            <p class="lead text-white-50 mb-4">
-                Supermercado Yaruquíes es tu destino de confianza para productos frescos, de calidad y a precios competitivos en Riobamba. Nos especializamos en ofrecer una experiencia de compra ágil, segura y personalizada, con un catálogo cuidadosamente seleccionado para satisfacer las necesidades de tu hogar y negocio.
-            </p>
-            <ul class="list-unstyled text-white-50 mb-4">
-                <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Atención personalizada y amable</li>
-                <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Entregas rápidas y seguras en Yaruquíes</li>
-                <li class="mb-2"><i class="bi bi-check-circle-fill text-danger me-2"></i> Variedad en productos de consumo, limpieza, bebidas, congelados y confitería</li>
-            </ul>
-            <a href="/" class="btn btn-danger rounded-pill px-4 py-2 fw-bold shadow">Volver al inicio</a>
+    </div>
+</section>
+
+<!-- Nuestra Historia -->
+<section class="py-5 bg-black">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="fw-bold text-danger mb-4">
+                    <i class="bi bi-history me-2"></i>Nuestra Historia
+                </h2>
+                <p class="text-white-50">
+                    El Supermercado Yaruquíes nació con una visión clara: llevar productos 
+                    frescos y de calidad directamente a los hogares de nuestra comunidad. 
+                    Lo que comenzó como un pequeño comercio local, se ha convertido en el 
+                    supermercado de confianza de miles de familias en Riobamba.
+                </p>
+                <p class="text-white-50">
+                    A lo largo de más de dos décadas, hemos mantenido nuestro compromiso 
+                    con la frescura de los productos, los precios justos y el servicio 
+                    personalizado que nos caracteriza.
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <div class="row g-4">
+                    <div class="col-6">
+                        <div class="card bg-dark border-secondary h-100 text-center p-4">
+                            <i class="bi bi-calendar3 text-danger fs-1 mb-3"></i>
+                            <h3 class="fw-bold text-white">20+</h3>
+                            <p class="text-white-50 mb-0">Años de experiencia</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-dark border-secondary h-100 text-center p-4">
+                            <i class="bi bi-people text-danger fs-1 mb-3"></i>
+                            <h3 class="fw-bold text-white">10,000+</h3>
+                            <p class="text-white-50 mb-0">Clientes satisfechos</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-dark border-secondary h-100 text-center p-4">
+                            <i class="bi bi-box-seam text-danger fs-1 mb-3"></i>
+                            <h3 class="fw-bold text-white">4,000+</h3>
+                            <p class="text-white-50 mb-0">Productos disponibles</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-dark border-secondary h-100 text-center p-4">
+                            <i class="bi bi-geo-alt text-danger fs-1 mb-3"></i>
+                            <h3 class="fw-bold text-white">1</h3>
+                            <p class="text-white-50 mb-0">Sucursal en Yaruquíes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Nuestra Misión -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="fw-bold text-center text-danger mb-5">
+            <i class="bi bi-bullseye me-2"></i>Nuestros Valores
+        </h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card bg-dark border-secondary h-100 text-center p-4">
+                    <div class="icon-wrapper bg-danger rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-award text-white fs-2"></i>
+                    </div>
+                    <h4 class="fw-bold text-white">Calidad Garantizada</h4>
+                    <p class="text-white-50">
+                        Seleccionamos cuidadosamente cada producto para garantizar 
+                        la mejor calidad para tu mesa.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-dark border-secondary h-100 text-center p-4">
+                    <div class="icon-wrapper bg-danger rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-currency-dollar text-white fs-2"></i>
+                    </div>
+                    <h4 class="fw-bold text-white">Precios Justos</h4>
+                    <p class="text-white-50">
+                        Ofrecemos las mejores ofertas y promociones para que 
+                        ahorres en cada compra.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-dark border-secondary h-100 text-center p-4">
+                    <div class="icon-wrapper bg-danger rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-heart text-white fs-2"></i>
+                    </div>
+                    <h4 class="fw-bold text-white">Atención Personalizada</h4>
+                    <p class="text-white-50">
+                        Nuestro equipo está comprometido con brindarte la mejor 
+                        experiencia de compra.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Servicios -->
+<section class="py-5 bg-black">
+    <div class="container">
+        <h2 class="fw-bold text-center text-danger mb-5">
+            <i class="bi bi-gift me-2"></i>Nuestros Servicios
+        </h2>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-dark border-secondary h-100 p-4">
+                    <i class="bi bi-truck text-danger fs-1 mb-3"></i>
+                    <h5 class="fw-bold text-white">Delivery a Domicilio</h5>
+                    <p class="text-white-50 small">
+                        Entregas rápidas y seguras en todo el sector de Yaruquíes.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-dark border-secondary h-100 p-4">
+                    <i class="bi bi-bag-check text-danger fs-1 mb-3"></i>
+                    <h5 class="fw-bold text-white">Pedidos por Teléfono</h5>
+                    <p class="text-white-50 small">
+                        Llama y realiza tu pedido de forma rápida y sencilla.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-dark border-secondary h-100 p-4">
+                    <i class="bi bi-credit-card text-danger fs-1 mb-3"></i>
+                    <h5 class="fw-bold text-white">Múltiples Formas de Pago</h5>
+                    <p class="text-white-50 small">
+                        Efectivo, tarjetas y transferencias bancarias.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-dark border-secondary h-100 p-4">
+                    <i class="bi bi-star text-danger fs-1 mb-3"></i>
+                    <h5 class="fw-bold text-white">Programa de Lealtad</h5>
+                    <p class="text-white-50 small">
+                        Acumula puntos y obtén descuentos exclusivos.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contacto -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="fw-bold text-danger mb-4">
+                    <i class="bi bi-geo-alt me-2"></i>Visítanos
+                </h2>
+                <div class="card bg-dark border-secondary p-5">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <i class="bi bi-geo-alt-fill text-danger fs-1 mb-3"></i>
+                            <h5 class="fw-bold text-white">Dirección</h5>
+                            <p class="text-white-50 mb-0">
+                                Sector Yaruquíes<br>
+                                Riobamba, Ecuador
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-telephone-fill text-danger fs-1 mb-3"></i>
+                            <h5 class="fw-bold text-white">Teléfono</h5>
+                            <p class="text-white-50 mb-0">
+                                +593 99 999 9999<br>
+                                +593 3 2XX XXXX
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-clock-fill text-danger fs-1 mb-3"></i>
+                            <h5 class="fw-bold text-white">Horarios</h5>
+                            <p class="text-white-50 mb-0">
+                                Lun - Sáb: 8:00 - 20:00<br>
+                                Dom: 9:00 - 14:00
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>

@@ -28,7 +28,31 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navMain">
-                <ul class="navbar-nav ms-auto align-items-center gap-3">
+                <ul class="navbar-nav me-auto align-items-center gap-2">
+                    <!-- Menú Categorías -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle fw-semibold text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-grid-3x3-gap me-1"></i> Categorías
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark shadow border-secondary">
+                            <li><a class="dropdown-item" href="{% url 'index' %}"><i class="bi bi-collection me-2"></i>Todos los productos</a></li>
+                            <li><hr class="dropdown-divider border-secondary"></li>
+                            {% for cat_slug, cat_nombre in categorias_principales %}
+                            <li>
+                                <a class="dropdown-item {% if categoria_activa == cat_slug %}active{% endif %}" 
+                                   href="?categoria={{ cat_slug }}">
+                                    {{ cat_nombre }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <!-- Enlace Quiénes Somos -->
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold text-white" href="{% url 'quienes_somos' %}">
+                            <i class="bi bi-people me-1"></i> Quiénes Somos
+                        </a>
+                    </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle fw-semibold text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
