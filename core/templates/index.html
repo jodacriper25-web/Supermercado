@@ -144,11 +144,9 @@
                             </div>
                         {% endif %}
                         {% if p.imagen %}
-                            <img src="{{ p.imagen.url }}" class="img-fluid p-4 object-fit-contain transition-transform hover-zoom" alt="{{ p.nombre }}" loading="lazy">
+                            <img src="{{ p.imagen.url }}" class="img-fluid p-4 object-fit-contain hover-scale" alt="{{ p.nombre }}" loading="lazy">
                         {% else %}
-                            <div class="d-flex align-items-center justify-content-center h-100 text-muted">
-                                <i class="bi bi-image fs-1 opacity-25"></i>
-                            </div>
+                            <img src="{% static 'img/products/placeholder.svg' %}" class="img-fluid p-4 object-fit-contain" alt="{{ p.nombre }}" loading="lazy">
                         {% endif %}
                     </div>
                     <div class="card-body px-1 pt-3 text-start d-flex flex-column bg-black">

@@ -11,6 +11,46 @@ import os
 import json
 import random
 
+# Mapeo de términos de categorías del XML a las 5 categorías principales
+# Cada categoría agrupa múltiples términos que podrían venir del XML
+CATEGORIA_MAP = {
+    'consumo': [
+        'consumo', 'aceites', 'conservas', 'fideos', 'arroz', 'harina', 'azucar',
+        'salsas', 'condimentos', 'especias', 'enlatados', 'legumbres', 'granos',
+        'cafe', 'te', 'chocolate', 'leche', 'lacteos', 'yogurt', 'queso', 'mantequilla',
+        'huevo', 'pan', 'galletas', 'cereal', 'barras', 'mermelada', 'miel',
+        'abarrotes', 'despensa', 'comestibles', 'alimentacion', 'alimentos'
+    ],
+    'limpieza-y-hogar': [
+        'limpieza', 'hogar', 'detergente', 'jabon', 'suavizante', 'cloro', 'lejia',
+        'desinfectante', 'limpiador', 'abrasivo', 'escoba', 'trapeador', 'recogedor',
+        'plasticos', 'platos', 'vasos', 'cubiertos', 'envases', 'papel',
+        'servilletas', 'toallas', 'bolsas', 'basura', 'aluminio', 'film',
+        'perfumeria', 'jabones', 'shampoo', 'acondicionador', 'desodorante',
+        'higiene', 'personal', 'aseo', 'bauhaus', 'construccion', 'ferreteria'
+    ],
+    'bebidas': [
+        'bebida', 'bebidas', 'gaseosa', 'gaseosas', 'agua', 'jugos', 'jugo',
+        'jugo', 'energia', 'energetico', 'energizante', 'licor', 'licores',
+        'vino', 'cerveza', 'cervezas', 'refresco', 'refrescos', 'bebida',
+        'tonica', 'soda', 'malta', 'isotonico', 'hidratante'
+    ],
+    'congelados': [
+        'congelado', 'congelados', 'helado', 'helados', 'carne', 'carnes',
+        'pollo', 'pescado', 'mariscos', 'congelada', 'congelados', 'freeze',
+        'vegetales', 'verduras', 'frutas', 'congeladas', 'pizza', 'empanada',
+        ' Nuggets', 'pan', 'pastel', 'reposteria', 'dulces', 'postres'
+    ],
+    'confiteria': [
+        'confiteria', 'confite', 'dulces', 'caramelo', 'caramelos', 'chocolate',
+        'chocolates', 'chicle', 'chicles', 'golosina', 'golosinas', 'snack',
+        'snacks', 'galleta', 'galletas', 'pastel', 'pasteles', 'torta',
+        'tortas', 'bizcocho', 'donut', 'donuts', 'cupcake', 'bombon',
+        'bombones', 'piramide', 'tableta', 'tableta', 'cacao', 'bomboneria'
+    ],
+}
+
+
 # Categorías principales para filtrar
 CATEGORIAS_PRINCIPALES = [
     ('consumo', 'Consumo', 'CONSUMO'),
@@ -37,11 +77,21 @@ def index(request):
     # Filtro por categoría (desde query param ?categoria=...)
     categoria_slug = request.GET.get('categoria')
     if categoria_slug:
-        # Buscar por icontains para que sea menos estricto
-        productos_filtrados = Producto.objects.filter(
-            activo=True,
-            categoria__nombre__icontains=categoria_slug.replace('-', ' ')
-        )
+        # Usar el diccionario de mapeo para encontrar productos
+        categoria_slug_lower = categoria_slug.lower()
+        if categoria_slug_lower in CATEGORIA_MAP:
+            # Construir consulta Q con icontains para cada término relacionado
+            terminos = CATEGORIA_MAP[categoria_slug_lower]
+            query = Q()
+            for termino in terminos:
+                query |= Q(categoria__nombre__icontains=termino)
+            productos_filtrados = Producto.objects.filter(activo=True).filter(query)
+        else:
+            # Fallback: buscar por icontains directo
+            productos_filtrados = Producto.objects.filter(
+                activo=True,
+                categoria__nombre__icontains=categoria_slug.replace('-', ' ')
+            )
         productos = list(productos_filtrados)
 
     # Búsqueda
@@ -178,6 +228,7 @@ def productos_json(request):
     Usado por el carrito de compras.
     """
     productos = Producto.objects.filter(activo=True).select_related('categoria')
+    placeholder_url = f"{settings.STATIC_URL}img/products/placeholder.svg"
     
     productos_list = []
     for p in productos:
@@ -187,7 +238,7 @@ def productos_json(request):
             'nombre': p.nombre,
             'precio': float(p.precio),
             'categoria': p.categoria.nombre if p.categoria else '',
-            'imagen': p.imagen.url if p.imagen else None,
+            'imagen': p.imagen.url if p.imagen else placeholder_url,
             'stock': p.stock,
             'activo': p.activo,
         })
@@ -201,19 +252,28 @@ def productos_json(request):
 def categoria_view(request, slug):
     """
     Vista para mostrar productos de una categoría específica.
-    Usa icontains para que el filtro sea menos estricto y encuentre
-    categorías aunque el nombre no coincida exactamente.
+    Usa el diccionario CATEGORIA_MAP para agrupar productos por términos relacionados.
     """
     categorias = Categoria.objects.all()
     
-    # Buscar productos por nombre de categoría (icontains para mayor flexibilidad)
-    productos = Producto.objects.filter(
-        activo=True,
-        categoria__nombre__icontains=slug.replace('-', ' ')
-    )
-    
-    # Obtener el nombre de la categoría para mostrar
-    categoria_nombre = slug.replace('-', ' ').title()
+    # Usar el diccionario de mapeo para encontrar productos
+    slug_lower = slug.lower()
+    if slug_lower in CATEGORIA_MAP:
+        # Construir consulta Q con icontains para cada término relacionado
+        terminos = CATEGORIA_MAP[slug_lower]
+        query = Q()
+        for termino in terminos:
+            query |= Q(categoria__nombre__icontains=termino)
+        productos = Producto.objects.filter(activo=True).filter(query)
+        # Usar el nombre de la categoría del mapping
+        categoria_nombre = dict(CATEGORIAS_PRINCIPALES).get(slug, slug.replace('-', ' ').title())
+    else:
+        # Fallback: buscar por icontains directo
+        productos = Producto.objects.filter(
+            activo=True,
+            categoria__nombre__icontains=slug.replace('-', ' ')
+        )
+        categoria_nombre = slug.replace('-', ' ').title()
     
     return render(request, 'index.html', {
         'categorias': categorias,
