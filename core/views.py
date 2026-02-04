@@ -30,7 +30,7 @@ def index(request):
     # Filtro por categoría
     categoria_slug = request.GET.get('categoria')
     if categoria_slug:
-        productos = productos.filter(categoria__slug=categoria_slug)
+        productos = productos.filter(categoria__nombre__iexact=categoria_slug.replace('-', ' '))
 
     # Búsqueda
     q = request.GET.get('q')
@@ -39,10 +39,34 @@ def index(request):
             Q(nombre__icontains=q) | Q(codigo_producto__icontains=q) | Q(categoria__nombre__icontains=q)
         )
 
+    # Detectar imágenes para el carrusel (carpeta: core/static/img/hero)
+    hero_images = []
+    try:
+        hero_dir = settings.BASE_DIR / 'core' / 'static' / 'img' / 'hero'
+        if hero_dir.exists():
+            files = [f for f in hero_dir.iterdir() if f.suffix.lower() in ('.jpg', '.jpeg', '.png', '.svg')]
+            files.sort()
+            # leer archivo de intervalos si existe (hero/intervals.json)
+            intervals = {}
+            try:
+                int_file = hero_dir / 'intervals.json'
+                if int_file.exists():
+                    with open(int_file, 'r', encoding='utf-8') as fh:
+                        intervals = json.load(fh)
+            except Exception:
+                intervals = {}
+
+            for f in files:
+                ms = int(float(intervals.get(f.name, 30)) * 1000) if intervals.get(f.name) else 30000
+                hero_images.append({'filename': f.name, 'interval': ms})
+    except Exception:
+        hero_images = [{'filename': 'hero1.svg', 'interval': 30}, {'filename': 'hero2.svg', 'interval': 30}]
+
     return render(request, 'index.html', {
         'categorias': categorias,
         'categorias_principales': CATEGORIAS_PRINCIPALES,
         'productos': productos,
+        'hero_images': hero_images,
         'categoria_activa': categoria_slug,
         'q': q or '',
     })

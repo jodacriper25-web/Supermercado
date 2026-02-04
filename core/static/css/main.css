@@ -86,7 +86,7 @@ body {
 .hero-slide .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(155,28,28,0.7), rgba(122,22,22,0.75));
+    background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(60,10,10,0.80) 50%, rgba(0,0,0,0.70) 100%);
     z-index: 1;
 }
 
