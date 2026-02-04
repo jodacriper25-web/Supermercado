@@ -7,6 +7,39 @@ from django.utils.text import slugify
 from core.models import Categoria, Producto
 
 
+# Mapeo de categorías del XML a las 5 categorías principales
+CATEGORIA_MAP = {
+    # CONSUMO - alimentos básicos, abarrotes, etc.
+    'consumo': ['CONSUMO', 'ABARROTES', 'ALIMENTOS', 'GRANOS', 'CONSERVAS', 'ARROZ', 'AZUCAR', 'HARINA', 'FIDEOS', 'ACEITE', 'SAL', 'ESPECIAS'],
+    # LIMPIEZA Y HOGAR - productos de limpieza
+    'limpieza-y-hogar': ['LIMPIEZA', 'HOGAR', 'DETERGENTE', 'JABON', 'SUAVIZANTE', 'LEJIA', 'CLORO', 'LIMPIA', 'DESINFECTANTE', 'PAPEL', 'SERVILLETA'],
+    # BEBIDAS - bebidas
+    'bebidas': ['BEBIDAS', 'GASEOSA', 'JUGO', 'AGUA', 'CERVEZA', 'VINO', 'REFRESCO', 'BEBIDA'],
+    # CONGELADOS - productos congelados
+    'congelados': ['CONGELADOS', 'CONGELADO', 'HELADO', 'HIELO', 'FRITO', 'CONGELADA'],
+    # CONFITERIA - dulces y snacks
+    'confiteria': ['CONFITERIA', 'DULCES', 'GALLETA', 'CHOCOLATE', 'CARAMELO', 'SNACK', 'PISTACHOS', 'FRUTOS SECOS'],
+}
+
+
+def normalizar_categoria(catname):
+    """
+    Normaliza el nombre de categoría del XML a una de las 5 categorías principales.
+    """
+    if not catname:
+        return 'Varios'
+    
+    catname_upper = catname.upper()
+    
+    for main_cat, keywords in CATEGORIA_MAP.items():
+        for keyword in keywords:
+            if keyword.upper() in catname_upper:
+                return main_cat.title()
+    
+    # Si no coincide ninguna, devolver la original formateada
+    return catname.title()
+
+
 class Command(BaseCommand):
     help = 'Importa productos desde un archivo XML (formato WinDev export) hacia el modelo Producto.'
 
@@ -61,6 +94,13 @@ class Command(BaseCommand):
             # Buscar grupo/categoría
             catname = text_map.get('grupo', 'Varios')
             
+            # Normalizar categoría a las 5 principales
+            normalized_catname = normalizar_categoria(catname)
+            
+            categoria, _ = Categoria.objects.get_or_create(
+                nombre=normalized_catname, 
+                defaults={'slug': slugify(normalized_catname)}
+            )
             # Buscar precio A (precio principal)
             precio = text_map.get('precio_a')
             
@@ -94,12 +134,10 @@ class Command(BaseCommand):
             name = name.strip()
             catname = catname.strip() if catname else 'Varios'
             
-            categoria, _ = Categoria.objects.get_or_create(nombre=catname, defaults={'slug': slugify(catname)})
-
             prod_values = {
                 'nombre': name,
                 'categoria': categoria,
-                'grupo': catname,
+                'grupo': catname,  # Guardamos la categoría original del XML
                 'linea_nombre': linea or '',
                 'precio_a': float(precio) if precio else 0,
                 'costo_promedio': float(costo) if costo else 0,

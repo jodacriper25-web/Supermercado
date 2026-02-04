@@ -16,6 +16,9 @@ urlpatterns = [
     # Página principal
     path('', views.index, name='index'),
 
+    # Categoría con slug
+    path('categoria/<str:slug>/', views.categoria_view, name='categoria'),
+
     # Dashboard de administración personalizado
     path('dashboard-admin/', dashboard_admin, name='dashboard_admin'),
 
@@ -34,6 +37,12 @@ urlpatterns = [
 
     # Admin oculto - Importación de XML
     path('admin-importar-xml/', admin_import_xml, name='admin_import_xml'),
+
+    # Carrito de compras
+    path('carrito/', views.cart_detail, name='cart_detail'),
+    
+    # API de productos (para el carrito)
+    path('api/productos/', views.productos_json, name='productos_json'),
 ]
 
 # Servir media y static en desarrollo

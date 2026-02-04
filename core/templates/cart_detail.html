@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Carrito de Compras | Supermercado Yaruquíes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none text-white-50">Inicio</a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Carrito de Compras</li>
+                </ol>
+            </nav>
+            <h1 class="fw-bold text-white mb-2">Carrito de Compras</h1>
+            <p class="text-white-50">Revisa los productos que has agregado a tu carrito</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% if not user.is_authenticated %}
+            <div class="alert alert-warning rounded-4 mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>¡Atención!</strong> Para finalizar tu compra, <a href="#" class="alert-link" data-bs-toggle="modal" data-bs-target="#loginModal">inicia sesión</a> o <a href="#" class="alert-link">regístrate</a>.
+            </div>
+            {% endif %}
+
+            <div class="card bg-dark border-secondary rounded-4">
+                <div class="card-body p-0">
+                    <!-- Header de la tabla -->
+                    <div class="row p-4 border-bottom border-secondary d-none d-md-flex">
+                        <div class="col-md-5"><span class="text-white-50 small fw-bold">PRODUCTO</span></div>
+                        <div class="col-md-2 text-center"><span class="text-white-50 small fw-bold">PRECIO</span></div>
+                        <div class="col-md-2 text-center"><span class="text-white-50 small fw-bold">CANTIDAD</span></div>
+                        <div class="col-md-2 text-end"><span class="text-white-50 small fw-bold">SUBTOTAL</span></div>
+                        <div class="col-md-1 text-center"><span class="text-white-50 small fw-bold">QUITAR</span></div>
+                    </div>
+
+                    <!-- Lista de productos del carrito -->
+                    <div id="cart-items-container">
+                        <!-- Los productos se cargarán aquí mediante JavaScript -->
+                    </div>
+
+                    <!-- Carrito vacío -->
+                    <div id="empty-cart-message" class="text-center py-5 d-none">
+                        <i class="bi bi-bag-x fs-1 text-white-50"></i>
+                        <h3 class="mt-3 text-white">Tu carrito está vacío</h3>
+                        <p class="text-white-50">Agrega productos para comenzar tu compra</p>
+                        <a href="{% url 'index' %}" class="btn btn-danger rounded-pill px-4 mt-3">
+                            <i class="bi bi-shop me-2"></i>Ver Productos
+                        </a>
+                    </div>
+
+                    <!-- Total y acciones -->
+                    <div id="cart-summary" class="d-none">
+                        <div class="p-4 border-top border-secondary">
+                            <div class="row align-items-center">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <a href="{% url 'index' %}" class="btn btn-outline-light rounded-pill">
+                                        <i class="bi bi-arrow-left me-2"></i>Seguir Comprando
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-white-50">Subtotal:</span>
+                                        <span class="text-white fw-bold" id="cart-subtotal">$0.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-white-50">Envío:</span>
+                                        <span class="text-white-50 small">Calculado en checkout</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <span class="text-white fs-5 fw-bold">Total:</span>
+                                        <span class="text-danger fs-4 fw-bold" id="cart-total">$0.00</span>
+                                    </div>
+                                    <button class="btn btn-danger w-100 py-3 rounded-pill fw-bold shadow-sm hover-scale" onclick="proceedToCheckout()">
+                                        <i class="bi bi-credit-card me-2"></i>Finalizar Compra
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Template para cada producto (usado por JavaScript) -->
+<template id="cart-item-template">
+    <div class="cart-item row p-4 align-items-center border-bottom border-secondary">
+        <div class="col-md-5">
+            <div class="d-flex align-items-center gap-3">
+                <img src="" alt="" class="product-image rounded-3 bg-secondary" style="width: 80px; height: 80px; object-fit: cover;">
+                <div>
+                    <h5 class="product-name text-white mb-1"></h5>
+                    <p class="product-category text-white-50 small mb-0"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 text-center">
+            <span class="product-price text-white d-md-none small">Precio: </span>
+            <span class="product-price-value fw-bold"></span>
+        </div>
+        <div class="col-md-2 text-center">
+            <div class="d-flex align-items-center justify-content-center gap-2">
+                <button class="btn btn-sm btn-outline-secondary quantity-decrease" onclick="updateQuantity(this, -1)">
+                    <i class="bi bi-dash"></i>
+                </button>
+                <input type="number" class="form-control form-control-sm text-center quantity-input" 
+                       value="1" min="1" max="99" style="width: 60px;" onchange="syncQuantity(this)">
+                <button class="btn btn-sm btn-outline-secondary quantity-increase" onclick="updateQuantity(this, 1)">
+                    <i class="bi bi-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-2 text-end">
+            <span class="product-subtotal d-md-none small text-white-50">Subtotal: </span>
+            <span class="text-danger fw-bold"></span>
+        </div>
+        <div class="col-md-1 text-center">
+            <button class="btn btn-sm btn-outline-danger rounded-circle" onclick="removeItem(this)" title="Eliminar producto">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    </div>
+</template>
+
+<!-- Toast container -->
+<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;"></div>
+
+<script>
+const CART_KEY = 'supermercado_yaruquies_cart';
+
+// API endpoint para obtener productos
+const PRODUCTS_API_URL = '/api/productos/';
+
+let productosCache = {};
+
+// Obtener productos del servidor
+async function fetchProducts() {
+    try {
+        const response = await fetch(PRODUCTS_API_URL);
+        if (response.ok) {
+            const data = await response.json();
+            data.productos.forEach(p => {
+                productosCache[p.id] = p;
+            });
+        }
+    } catch (error) {
+        console.log('No se pudieron cargar los productos desde la API');
+    }
+}
+
+// Obtener carrito del localStorage
+function getCart() {
+    const cart = localStorage.getItem(CART_KEY);
+    return cart ? JSON.parse(cart) : {};
+}
+
+// Guardar carrito en localStorage
+function saveCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartCount();
+    renderCart();
+}
+
+// Actualizar contador del carrito
+function updateCartCount() {
+    const cart = getCart();
+    const count = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+    const countEl = document.getElementById('cart-count');
+    if (countEl) {
+        countEl.innerText = count;
+    }
+}
+
+// Actualizar cantidad de un producto
+function updateQuantity(button, change) {
+    const cartItem = button.closest('.cart-item');
+    const productId = cartItem.dataset.productId;
+    const cart = getCart();
+    
+    let newQty = cart[productId] + change;
+    if (newQty < 1) newQty = 1;
+    if (newQty > 99) newQty = 99;
+    
+    cart[productId] = newQty;
+    saveCart(cart);
+}
+
+// Sincronizar cantidad desde el input
+function syncQuantity(input) {
+    const cartItem = input.closest('.cart-item');
+    const productId = cartItem.dataset.productId;
+    const cart = getCart();
+    
+    let newQty = parseInt(input.value);
+    if (isNaN(newQty) || newQty < 1) newQty = 1;
+    if (newQty > 99) newQty = 99;
+    
+    cart[productId] = newQty;
+    saveCart(cart);
+}
+
+// Eliminar producto del carrito
+function removeItem(button) {
+    const cartItem = button.closest('.cart-item');
+    const productId = cartItem.dataset.productId;
+    const cart = getCart();
+    
+    delete cart[productId];
+    saveCart(cart);
+    showToast('Producto eliminado del carrito', 'warning');
+}
+
+// Renderizar el carrito
+async function renderCart() {
+    const container = document.getElementById('cart-items-container');
+    const emptyMessage = document.getElementById('empty-cart-message');
+    const cartSummary = document.getElementById('cart-summary');
+    
+    const cart = getCart();
+    const productIds = Object.keys(cart);
+    
+    if (productIds.length === 0) {
+        container.innerHTML = '';
+        emptyMessage.classList.remove('d-none');
+        cartSummary.classList.add('d-none');
+        return;
+    }
+    
+    emptyMessage.classList.add('d-none');
+    cartSummary.classList.remove('d-none');
+    
+    // Cargar productos si no están en cache
+    await fetchProducts();
+    
+    container.innerHTML = '';
+    
+    let subtotal = 0;
+    const template = document.getElementById('cart-item-template');
+    
+    for (const productId of productIds) {
+        const quantity = cart[productId];
+        const product = productosCache[productId];
+        
+        if (!product) continue;
+        
+        const clone = template.content.cloneNode(true);
+        const item = clone.querySelector('.cart-item');
+        item.dataset.productId = productId;
+        
+        const imageEl = item.querySelector('.product-image');
+        if (product.imagen) {
+            imageEl.src = product.imagen;
+        } else {
+            imageEl.src = '{% static "img/logo.png" %}';
+        }
+        imageEl.alt = product.nombre;
+        
+        item.querySelector('.product-name').textContent = product.nombre;
+        item.querySelector('.product-category').textContent = product.categoria;
+        
+        const price = parseFloat(product.precio) || 0;
+        const subtotalItem = price * quantity;
+        subtotal += subtotalItem;
+        
+        item.querySelector('.product-price-value').textContent = formatPrice(price);
+        item.querySelectorAll('.product-subtotal + span')[0].textContent = formatPrice(subtotalItem);
+        
+        const qtyInput = item.querySelector('.quantity-input');
+        qtyInput.value = quantity;
+        
+        container.appendChild(clone);
+    }
+    
+    // Actualizar totales
+    document.getElementById('cart-subtotal').textContent = formatPrice(subtotal);
+    document.getElementById('cart-total').textContent = formatPrice(subtotal);
+}
+
+// Formatear precio
+function formatPrice(price) {
+    return '$' + price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// Proceder al checkout
+function proceedToCheckout() {
+    const cart = getCart();
+    const count = Object.keys(cart).length;
+    
+    if (count === 0) {
+        showToast('Tu carrito está vacío', 'warning');
+        return;
+    }
+    
+    {% if not user.is_authenticated %}
+    // Si no está logueado, mostrar modal de login
+    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    loginModal.show();
+    showToast('Debes iniciar sesión para continuar', 'warning');
+    {% else %}
+    // Redirigir a la página de checkout
+    window.location.href = '/checkout/';
+    {% endif %}
+}
+
+// Mostrar toast
+function showToast(message, type = 'info') {
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+    
+    const bgClass = type === 'success' ? 'bg-success' : type === 'warning' ? 'bg-warning' : 'bg-info';
+    const icon = type === 'success' ? 'bi-check-circle' : type === 'warning' ? 'bi-exclamation-triangle' : 'bi-info-circle';
+    
+    const toastId = 'toast-' + Date.now();
+    const toastHtml = `
+        <div id="${toastId}" class="toast ${bgClass} text-white" role="alert">
+            <div class="toast-header ${bgClass} text-white">
+                <i class="bi ${icon} me-2"></i>
+                <strong class="me-auto">Supermercado Yaruquíes</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        </div>
+    `;
+    
+    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+    const toastEl = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
+    
+    toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+}
+
+// Inicializar al cargar
+document.addEventListener('DOMContentLoaded', function() {
+    renderCart();
+    updateCartCount();
+});
+</script>
+{% endblock %}

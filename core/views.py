@@ -1,20 +1,23 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from core.models import Categoria, Producto
-from django.db.models import Q
+from django.db.models import Q, F
 from django.conf import settings
 import os
 import json
+import random
 
 # Categorías principales para filtrar
 CATEGORIAS_PRINCIPALES = [
-    ('CONSUMO', 'Consumo'),
-    ('LIMPIEZA Y HOGAR', 'Limpieza y Hogar'),
-    ('BEBIDAS', 'Bebidas'),
-    ('CONGELADOS', 'Congelados'),
-    ('CONFITERIA', 'Confitería'),
+    ('consumo', 'Consumo', 'CONSUMO'),
+    ('limpieza-y-hogar', 'Limpieza y Hogar', 'LIMPIEZA Y HOGAR'),
+    ('bebidas', 'Bebidas', 'BEBIDAS'),
+    ('congelados', 'Congelados', 'CONGELADOS'),
+    ('confiteria', 'Confitería', 'CONFITERIA'),
 ]
 
 
@@ -25,19 +28,28 @@ CATEGORIAS_PRINCIPALES = [
 
 def index(request):
     categorias = Categoria.objects.all()
-    productos = Producto.objects.filter(activo=True)
+    
+    # Mostrar solo 10 productos aleatorios para la página de inicio
+    productos = list(Producto.objects.filter(activo=True))
+    random.shuffle(productos)
+    productos = productos[:10]
 
-    # Filtro por categoría
+    # Filtro por categoría (desde query param ?categoria=...)
     categoria_slug = request.GET.get('categoria')
     if categoria_slug:
-        productos = productos.filter(categoria__nombre__iexact=categoria_slug.replace('-', ' '))
+        # Buscar por icontains para que sea menos estricto
+        productos_filtrados = Producto.objects.filter(
+            activo=True,
+            categoria__nombre__icontains=categoria_slug.replace('-', ' ')
+        )
+        productos = list(productos_filtrados)
 
     # Búsqueda
     q = request.GET.get('q')
     if q:
-        productos = productos.filter(
+        productos = list(Producto.objects.filter(
             Q(nombre__icontains=q) | Q(codigo_producto__icontains=q) | Q(categoria__nombre__icontains=q)
-        )
+        ).filter(activo=True))
 
     # Detectar imágenes para el carrusel (carpeta: core/static/img/hero)
     hero_images = []
@@ -143,3 +155,72 @@ def logout_view(request):
     logout(request)
     messages.success(request, "Has cerrado sesión correctamente")
     return redirect('index')
+
+
+# ---------------------------
+# Carrito de compras
+# ---------------------------
+def cart_detail(request):
+    """
+    Vista para mostrar el detalle del carrito de compras.
+    Lee los productos del carrito desde localStorage via JavaScript.
+    """
+    return render(request, 'cart_detail.html')
+
+
+# ---------------------------
+# API de productos (para el carrito)
+# ---------------------------
+@require_GET
+def productos_json(request):
+    """
+    API para obtener lista de productos en formato JSON.
+    Usado por el carrito de compras.
+    """
+    productos = Producto.objects.filter(activo=True).select_related('categoria')
+    
+    productos_list = []
+    for p in productos:
+        productos_list.append({
+            'id': p.id,
+            'codigo_producto': p.codigo_producto,
+            'nombre': p.nombre,
+            'precio': float(p.precio),
+            'categoria': p.categoria.nombre if p.categoria else '',
+            'imagen': p.imagen.url if p.imagen else None,
+            'stock': p.stock,
+            'activo': p.activo,
+        })
+    
+    return JsonResponse({'productos': productos_list})
+
+
+# ---------------------------
+# Vista de Categoría
+# ---------------------------
+def categoria_view(request, slug):
+    """
+    Vista para mostrar productos de una categoría específica.
+    Usa icontains para que el filtro sea menos estricto y encuentre
+    categorías aunque el nombre no coincida exactamente.
+    """
+    categorias = Categoria.objects.all()
+    
+    # Buscar productos por nombre de categoría (icontains para mayor flexibilidad)
+    productos = Producto.objects.filter(
+        activo=True,
+        categoria__nombre__icontains=slug.replace('-', ' ')
+    )
+    
+    # Obtener el nombre de la categoría para mostrar
+    categoria_nombre = slug.replace('-', ' ').title()
+    
+    return render(request, 'index.html', {
+        'categorias': categorias,
+        'categorias_principales': CATEGORIAS_PRINCIPALES,
+        'productos': productos,
+        'hero_images': [],
+        'categoria_activa': slug,
+        'categoria_nombre': categoria_nombre,
+        'q': '',
+    })

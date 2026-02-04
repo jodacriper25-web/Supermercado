@@ -55,6 +55,18 @@ class Producto(models.Model):
     def en_oferta(self):
         return self.precio_oferta is not None and self.precio_oferta < self.precio_a
 
+    @property
+    def precio(self):
+        """Devuelve el precio de oferta si existe, sino el precio normal."""
+        if self.precio_oferta and self.precio_oferta < self.precio_a:
+            return self.precio_oferta
+        return self.precio_a
+
+    @property
+    def stock(self):
+        """Alias para existencia_bodega."""
+        return self.existencia_bodega
+
 class Pedido(models.Model):
     ESTADOS = [
         ('pendiente', '💳 Pago Pendiente'),

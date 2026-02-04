@@ -37,10 +37,10 @@
                         <ul class="dropdown-menu dropdown-menu-dark shadow border-secondary">
                             <li><a class="dropdown-item" href="{% url 'index' %}"><i class="bi bi-collection me-2"></i>Todos los productos</a></li>
                             <li><hr class="dropdown-divider border-secondary"></li>
-                            {% for cat_slug, cat_nombre in categorias_principales %}
+                            {% for cat_slug, cat_nombre, cat_search in categorias_principales %}
                             <li>
                                 <a class="dropdown-item {% if categoria_activa == cat_slug %}active{% endif %}" 
-                                   href="?categoria={{ cat_slug }}">
+                                   href="{% url 'categoria' slug=cat_slug %}">
                                     {{ cat_nombre }}
                                 </a>
                             </li>
