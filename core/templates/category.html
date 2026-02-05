@@ -10,7 +10,7 @@
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb justify-content-center">
-                    <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white-50">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'inicio' %}" class="text-white-50">Inicio</a></li>
                     {% if categoria_nombre %}
                     <li class="breadcrumb-item active text-white" aria-current="page">{{ categoria_nombre }}</li>
                     {% else %}
@@ -41,7 +41,7 @@
         <div class="row mb-5">
             <div class="col-12">
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="{% url 'index' %}" class="btn {% if not categoria_activa %}btn-danger{% else %}btn-outline-secondary{% endif %} rounded-pill">
+                    <a href="{% url 'inicio' %}" class="btn {% if not categoria_activa %}btn-danger{% else %}btn-outline-secondary{% endif %} rounded-pill">
                         <i class="bi bi-grid me-1"></i> Todos
                     </a>
                     {% for cat_slug, cat_nombre in categorias_principales %}
@@ -107,7 +107,7 @@
                     <i class="bi bi-box-seam display-1 text-muted"></i>
                     <h3 class="mt-3 text-white-50">No hay productos en esta categoría</h3>
                     <p class="text-white-50">Prueba con otra categoría o regresa más tarde.</p>
-                    <a href="{% url 'index' %}" class="btn btn-danger rounded-pill mt-3">
+                    <a href="{% url 'inicio' %}" class="btn btn-danger rounded-pill mt-3">
                         <i class="bi bi-house me-2"></i>Volver al Inicio
                     </a>
                 </div>

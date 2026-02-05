@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -10,11 +11,14 @@ from core.views_pedido import crear_pedido, pedidos_json, checkout_view, admin_i
 from core.views_dashboard import dashboard_admin
 
 urlpatterns = [
+    # Redirigir la raíz al login (acceso)
+    path('', lambda request: redirect('acceso', permanent=False), name='root'),
+
     # Admin de Django
     path('admin/', admin.site.urls),
 
-    # Página principal
-    path('', views.index, name='index'),
+    # Página principal (productos)
+    path('inicio/', views.index, name='inicio'),
 
     # Categoría con slug
     path('categoria/<str:slug>/', views.categoria_view, name='categoria'),

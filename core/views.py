@@ -258,7 +258,7 @@ def register_view(request):
         # Loguear automáticamente
         login(request, user)
         messages.success(request, "¡Registro exitoso! Bienvenido a Supermercado Yaruquíes")
-        return redirect('index')
+        return redirect('inicio')
 
     # Si es GET, mostrar formulario de registro
     return render(request, 'registro.html')
@@ -290,7 +290,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.success(request, "Has cerrado sesión correctamente")
-    return redirect('index')
+    return redirect('acceso')
 
 
 # ---------------------------

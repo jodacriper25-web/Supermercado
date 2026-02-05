@@ -1,7 +1,7 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from core.models import Producto, Pedido, User
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, F
 from datetime import datetime
 
 @staff_member_required
@@ -23,7 +23,7 @@ def dashboard_admin(request):
     data = [float(v['total']) for v in ventas_por_mes]
 
     # Productos con stock bajo
-    productos_stock_bajo = Producto.objects.filter(existencia_bodega__lte=models.F('stock_minimo'))
+    productos_stock_bajo = Producto.objects.filter(existencia_bodega__lte=F('stock_minimo'))
 
     context = {
         'total_productos': total_productos,
