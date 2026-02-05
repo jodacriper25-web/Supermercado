@@ -5,11 +5,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from core.models import Categoria, Producto
+from core.security import rate_limit_login, check_login_success, log_login_attempt
 from django.db.models import Q, F
 from django.conf import settings
 import os
 import json
 import random
+import logging
+
+logger = logging.getLogger('core')
 
 # Mapeo de términos de categorías del XML a las 5 categorías principales
 # Cada categoría agrupa múltiples términos que podrían venir del XML
@@ -53,12 +57,15 @@ CATEGORIA_MAP = {
 
 # Categorías principales para filtrar
 CATEGORIAS_PRINCIPALES = [
-    ('consumo', 'Consumo', 'CONSUMO'),
-    ('limpieza-y-hogar', 'Limpieza y Hogar', 'LIMPIEZA Y HOGAR'),
-    ('bebidas', 'Bebidas', 'BEBIDAS'),
-    ('congelados', 'Congelados', 'CONGELADOS'),
-    ('confiteria', 'Confitería', 'CONFITERIA'),
+    ('consumo', 'Consumo'),
+    ('limpieza-y-hogar', 'Limpieza y Hogar'),
+    ('bebidas', 'Bebidas'),
+    ('congelados', 'Congelados'),
+    ('confiteria', 'Confitería'),
 ]
+
+# Diccionario para búsquedas rápidas
+CATEGORIAS_DICT = dict(CATEGORIAS_PRINCIPALES)
 
 
 # ---------------------------
@@ -69,10 +76,10 @@ CATEGORIAS_PRINCIPALES = [
 def index(request):
     categorias = Categoria.objects.all()
     
-    # Mostrar solo 10 productos aleatorios para la página de inicio
+    # Mostrar 25 productos aleatorios para la página de inicio
     productos = list(Producto.objects.filter(activo=True))
     random.shuffle(productos)
-    productos = productos[:10]
+    productos = productos[:25]
 
     # Filtro por categoría (desde query param ?categoria=...)
     categoria_slug = request.GET.get('categoria')
@@ -154,6 +161,7 @@ def acceso(request):
 # ---------------------------
 # Login de Cliente
 # ---------------------------
+@rate_limit_login
 def login_cliente(request):
     """
     Login para clientes normales
@@ -167,12 +175,16 @@ def login_cliente(request):
             # Verificar que no sea administrador
             if not user.is_staff:
                 login(request, user)
+                check_login_success(request)
+                log_login_attempt(request, username, success=True)
                 messages.success(request, f"¡Bienvenido {user.username}!")
                 return redirect('index')
             else:
+                log_login_attempt(request, username, success=False)
                 messages.error(request, "Esta cuenta es de administrador. Usa el login de admin.")
                 return redirect('login_cliente')
         else:
+            log_login_attempt(request, username, success=False)
             messages.error(request, "Usuario o contraseña incorrectos")
             return redirect('login_cliente')
     
@@ -182,6 +194,7 @@ def login_cliente(request):
 # ---------------------------
 # Login de Administrador
 # ---------------------------
+@rate_limit_login
 def login_admin(request):
     """
     Login para administradores del sistema
@@ -195,12 +208,16 @@ def login_admin(request):
             # Verificar que sea administrador
             if user.is_staff:
                 login(request, user)
+                check_login_success(request)
+                log_login_attempt(request, username, success=True)
                 messages.success(request, f"¡Bienvenido Admin {user.username}!")
                 return redirect('dashboard_admin')
             else:
+                log_login_attempt(request, username, success=False)
                 messages.error(request, "Esta cuenta no tiene permisos de administrador.")
                 return redirect('login_admin')
         else:
+            log_login_attempt(request, username, success=False)
             messages.error(request, "Usuario o contraseña incorrectos")
             return redirect('login_admin')
     
@@ -335,7 +352,7 @@ def categoria_view(request, slug):
             query |= Q(categoria__nombre__icontains=termino)
         productos = list(Producto.objects.filter(activo=True).filter(query))
         # Usar el nombre de la categoría del mapping
-        categoria_nombre = dict(CATEGORIAS_PRINCIPALES).get(slug, slug.replace('-', ' ').title())
+        categoria_nombre = CATEGORIAS_DICT.get(slug, slug.replace('-', ' ').title())
     else:
         # Fallback: buscar por icontains directo
         productos = list(Producto.objects.filter(

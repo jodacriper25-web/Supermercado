@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function(){
     function scheduleNext() {
         clearTimeout(timeoutId);
         const active = hero.querySelector('.carousel-item.active');
-        const interval = active ? parseInt(active.getAttribute('data-bs-interval') || 30000, 10) : 30000;
+        const interval = active ? parseInt(active.getAttribute('data-bs-interval') || 10000, 10) : 10000;
         timeoutId = setTimeout(()=> carousel.next(), interval);
     }
 

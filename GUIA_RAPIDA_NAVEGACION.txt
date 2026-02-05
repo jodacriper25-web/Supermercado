@@ -1,0 +1,246 @@
+# ✅ NAVEGACIÓN RESTAURADA - GUÍA RÁPIDA DE PRUEBA
+
+## 🎯 ¿Qué Se Ha Restaurado?
+
+- ✅ **Navbar Principal:** Logo + "Quiénes Somos" + Usuario/Conectarse + Carrito
+- ✅ **Navbar Secundaria:** 5 Categorías (Consumo, Limpieza, Bebidas, Congelados, Confitería)  
+- ✅ **Enlaces Dinámicos:** Usan `{% url %}` de Django (no hardcoded)
+- ✅ **Estilos Modernos:** Hover effects, gradientes, líneas animadas
+- ✅ **Persistencia:** Visible en TODAS las páginas
+
+---
+
+## 🚀 Para Probar en Tu Navegador
+
+### 1. Inicia Django (si no está activo)
+```bash
+cd c:\xampp\htdocs\Supermercado
+python manage.py runserver
+```
+
+### 2. Abre http://127.0.0.1:8000/
+
+Deberías ver:
+```
+┌─ SUPERMERCADO YARUQUÍES [Quiénes Somos] [Conectarse] 🛒 ─┐
+│ Navbar Principal (Sticky, oscuro)                      │
+├─ [Home] [Consumo] [Limpieza] [Bebidas] [Congelados] [Confitería] ─┤
+│ Navbar Secundaria de Categorías (Sticky, gris oscuro)  │
+├─────────────────────────────────────────────────────────┤
+│ Contenido de Home...                                    │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🧪 Pruebas de Funcionalidad
+
+### ✅ Prueba 1: Navbars Sticky
+1. Abre Home: http://127.0.0.1:8000/
+2. Haz scroll hacia abajo
+3. **Resultado esperado:** Las dos navbars permanecen visibles en la parte superior
+
+### ✅ Prueba 2: Enlace "Quiénes Somos"
+1. Click en "Quiénes Somos" en navbar principal
+2. **URL esperada:** http://127.0.0.1:8000/quienes-somos/
+3. **Resultado esperado:** 
+   - Navbars presentes
+   - Contenido sobre la empresa visible
+   - NO debe mostrar "HTML puro"
+
+### ✅ Prueba 3: Categoría - Consumo
+1. Click en "Consumo" en navbar secundaria
+2. **URL esperada:** http://127.0.0.1:8000/categoria/consumo/
+3. **Resultado esperado:**
+   - Navbars presentes
+   - Productos filtrados por categoría visible
+   - NO debe mostrar "HTML puro"
+   - Debe mostrar "Se encontraron X productos"
+
+### ✅ Prueba 4: Categoría - Limpieza y Hogar
+1. Click en "Limpieza y Hogar" en navbar secundaria
+2. **URL esperada:** http://127.0.0.1:8000/categoria/limpieza-y-hogar/
+3. **Resultado esperado:** Ídem a Prueba 3
+
+### ✅ Prueba 5: Hover Effects
+1. En navbar secundaria, pasa mouse sobre "Consumo"
+2. **Resultado esperado:**
+   - Texto se vuelve ROJO (#dc3545)
+   - Línea roja animada aparece debajo
+   - Icono aumenta de tamaño
+   - Enlace sube 2px
+
+### ✅ Prueba 6: Carrito
+1. Click en icono 🛒 (carrito)
+2. **URL esperada:** http://127.0.0.1:8000/carrito/
+3. **Resultado esperado:**
+   - Navbars presentes
+   - Página de carrito visible
+
+### ✅ Prueba 7: Mobile/Responsive
+1. Abre DevTools (F12)
+2. Click en dispositivo móvil (Ctrl+Shift+M)
+3. **Resultado esperado:**
+   - Navbars colapsan en hamburguesa (☰)
+   - Click en hamburguesa despliega menú
+   - Enlaces son accesibles
+   - Todo responde bien
+
+---
+
+## 🔍 Si Algo No Funciona
+
+### Problema: "HTML puro" en categorías
+
+**Soluciones:**
+```bash
+# 1. Limpiar caché en navegador
+# En navegador: Ctrl+Shift+Delete (limpiar sitio web específico)
+
+# 2. Verificar Django
+python manage.py check
+# Debe mostrar: System check identified no issues (0 silenced).
+
+# 3. Recargar página
+# Presionando: Ctrl+F5 (refresco duro)
+
+# 4. Ver terminal Django por errores
+# Buscar cualquier traceback rojo en la terminal
+```
+
+### Problema: Enlaces no funcionan
+
+```bash
+# Verificar rutas
+python manage.py check
+
+# Ver en navegador si la URL es correcta:
+# http://127.0.0.1:8000/categoria/consumo/ ← OK
+# http://127.0.0.1:8000/categoria/consumo.html ← ERROR (no use .html)
+```
+
+### Problema: Navbars no aparecen sticky
+
+```bash
+# Limpiar caché CSS
+# En navegador: Ctrl+Shift+Delete
+
+# O forzar recarga
+# En navegador: Ctrl+F5
+```
+
+---
+
+## 📋 Archivos Modificados
+
+| Archivo | Cambios | Estado |
+|---------|---------|--------|
+| `core/templates/base.html` | + Enlace "Quiénes Somos" en navbar principal | ✅ HECHO |
+| `core/templates/base.html` | + Navbar secundaria con 5 categorías | ✅ HECHO |
+| `core/static/css/main.css` | + Estilos para navbar secundaria (hover, gradientes) | ✅ HECHO |
+| `core/templates/category.html` | (Sin cambios - funciona con la navbar en base.html) | ✅ OK |
+| `core/templates/quienes_somos.html` | (Sin cambios - funciona con la navbar en base.html) | ✅ OK |
+| `supermercado/urls.py` | (Sin cambios - rutas ya estaban) | ✅ OK |
+| `core/views.py` | (Sin cambios - vistas ya estaban) | ✅ OK |
+
+---
+
+## 🎨 Estilos Aplicados
+
+### Navbar Secundaria
+- **Background:** Gradiente oscuro (negro → gris oscuro)
+- **Links:** Gris claro (0.7 opacidad) por defecto
+- **Hover:** Rojo (#dc3545) + línea animada + icono +15%
+- **Border:** Línea gris fina en la parte inferior
+- **Sticky:** Se queda fija al scroll (z-index: 999)
+
+### Responsive
+- **Desktop (>576px):** Expandido, enlaces centrados
+- **Mobile (<576px):** Colapsado en hamburguesa, despliega al click
+
+---
+
+## 📱 URLs Importantes
+
+| Página | URL | Desde Navbar |
+|--------|-----|--------|
+| Home | `/` | Logo o "Inicio" |
+| Quiénes Somos | `/quienes-somos/` | "Quiénes Somos" |
+| Consumo | `/categoria/consumo/` | "Consumo" |
+| Limpieza y Hogar | `/categoria/limpieza-y-hogar/` | "Limpieza y Hogar" |
+| Bebidas | `/categoria/bebidas/` | "Bebidas" |
+| Congelados | `/categoria/congelados/` | "Congelados" |
+| Confitería | `/categoria/confiteria/` | "Confitería" |
+| Carrito | `/carrito/` | Icono 🛒 |
+| Conectarse | `/acceso/` | Botón "Conectarse" |
+
+---
+
+## ✨ Características Nuevas
+
+1. **Enlace "Quiénes Somos" visible en navbar principal**
+   - Icono: 🏪 (tienda)
+   - Texto: "Quiénes Somos"
+   - Ruta: `/quienes-somos/`
+
+2. **Navbar Secundaria con 5 Categorías**
+   - Sticky al hacer scroll
+   - Efectos de hover elegantes
+   - Enlaces dinámicos con `{% url %}`
+   - Ícono único para cada categoría
+   - Responsive: colapsa en móvil
+
+3. **Hover Effects Mejorados**
+   - Cambio de color a rojo
+   - Línea decorativa animada
+   - Iconos se agrandan
+   - Movimiento suave (translateY)
+
+---
+
+## 🚨 Django Validation
+
+Ejecuta esto para verificar que todo está correcto:
+
+```bash
+cd c:\xampp\htdocs\Supermercado
+python manage.py check
+```
+
+**Resultado esperado:**
+```
+System check identified no issues (0 silenced).
+```
+
+Si ves errores, reporta lo que dice en la terminal.
+
+---
+
+## 📞 Soporte Rápido
+
+Si tienes problemas:
+
+1. **Limpiar todo:**
+   ```bash
+   # En navegador
+   Ctrl+F5  # Recarga dura
+   Ctrl+Shift+Delete  # Limpiar caché (sitios)
+   ```
+
+2. **Reiniciar Django:**
+   ```bash
+   # Presiona Ctrl+C en terminal Django
+   # Luego ejecuta de nuevo:
+   python manage.py runserver
+   ```
+
+3. **Verificar errores:**
+   - Terminal Django: Ver si hay mensajes rojos
+   - DevTools (F12 → Console): Ver errores JavaScript
+   - DevTools (F12 → Network): Ver si archivos cargan
+
+---
+
+**Guía creada:** 4 Febrero 2026  
+**Estado:** ✅ LISTA PARA PROBAR  
+**Tiempo estimado para probar todo:** 5-10 minutos

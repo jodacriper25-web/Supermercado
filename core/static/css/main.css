@@ -442,3 +442,68 @@ img:not([alt]) {
         height: 150px;
     }
 }
+
+/* ================================== */
+/* Navbar Secundaria - Categorías    */
+/* ================================== */
+
+/* Estilos de la navbar secundaria de categorías */
+.navbar[style*="z-index: 999"] {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%);
+}
+
+/* Enlaces de la navbar secundaria */
+.navbar[style*="z-index: 999"] .nav-link {
+    position: relative;
+    color: rgba(255, 255, 255, 0.7) !important;
+    transition: all 0.3s ease;
+    padding: 0.75rem 1rem !important;
+}
+
+.navbar[style*="z-index: 999"] .nav-link:hover {
+    color: #dc3545 !important;
+    transform: translateY(-2px);
+}
+
+.navbar[style*="z-index: 999"] .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #dc3545, #ff6b6b);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.navbar[style*="z-index: 999"] .nav-link:hover::after {
+    width: 80%;
+}
+
+/* Ícono y estilos responsivos */
+.navbar[style*="z-index: 999"] .nav-link i {
+    transition: transform 0.3s ease;
+}
+
+.navbar[style*="z-index: 999"] .nav-link:hover i {
+    transform: scale(1.15);
+}
+
+/* Responsive: En móvil, ajustar espaciado */
+@media (max-width: 576px) {
+    .navbar[style*="z-index: 999"] .navbar-nav {
+        gap: 0 !important;
+    }
+    
+    .navbar[style*="z-index: 999"] .nav-link {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.75rem;
+    }
+}
+
+@media (min-width: 577px) {
+    .navbar[style*="z-index: 999"] .navbar-nav {
+        justify-content: center !important;
+    }
+}

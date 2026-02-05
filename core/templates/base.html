@@ -32,6 +32,11 @@
 
             <div class="collapse navbar-collapse" id="navMain">
                 <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    <li class="nav-item">
+                        <a href="{% url 'quienes_somos' %}" class="nav-link fw-semibold text-white hover:text-danger transition">
+                            <i class="bi bi-shop me-1"></i> Quiénes Somos
+                        </a>
+                    </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle fw-semibold text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
@@ -77,7 +82,51 @@
         </div>
     </nav>
 
-    <main class="flex-grow-1">
+    <!-- Navbar Secundaria: Categorías de Productos -->
+    <nav class="navbar navbar-expand-sm navbar-dark bg-black border-bottom border-secondary sticky-top shadow-sm" style="z-index: 999;">
+        <div class="container">
+            <button class="navbar-toggler border-0 d-sm-none" type="button" data-bs-toggle="collapse" data-bs-target="#navCategorias" aria-label="Categorías">
+                <i class="bi bi-list fs-5"></i>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navCategorias">
+                <ul class="navbar-nav w-100 justify-content-center gap-sm-0 gap-2">
+                    <li class="nav-item">
+                        <a href="{% url 'index' %}" class="nav-link px-3 text-white-50 fw-semibold text-uppercase text-nowrap" style="font-size: 0.85rem;">
+                            <i class="bi bi-house me-1"></i> Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'categoria' slug='consumo' %}" class="nav-link px-3 text-white-50 fw-semibold text-uppercase text-nowrap" style="font-size: 0.85rem;">
+                            <i class="bi bi-bag-check me-1"></i> Consumo
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'categoria' slug='limpieza-y-hogar' %}" class="nav-link px-3 text-white-50 fw-semibold text-uppercase text-nowrap" style="font-size: 0.85rem;">
+                            <i class="bi bi-house-gear me-1"></i> Limpieza y Hogar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'categoria' slug='bebidas' %}" class="nav-link px-3 text-white-50 fw-semibold text-uppercase text-nowrap" style="font-size: 0.85rem;">
+                            <i class="bi bi-cup-straw me-1"></i> Bebidas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'categoria' slug='congelados' %}" class="nav-link px-3 text-white-50 fw-semibold text-uppercase text-nowrap" style="font-size: 0.85rem;">
+                            <i class="bi bi-snow me-1"></i> Congelados
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'categoria' slug='confiteria' %}" class="nav-link px-3 text-white-50 fw-semibold text-uppercase text-nowrap" style="font-size: 0.85rem;">
+                            <i class="bi bi-candy me-1"></i> Confitería
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
         {% if messages %}
             <div class="container mt-3">
                 {% for message in messages %}
