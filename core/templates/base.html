@@ -60,9 +60,9 @@
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <button class="btn btn-outline-light rounded-pill px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <a href="{% url 'acceso' %}" class="btn btn-outline-light rounded-pill px-4 fw-bold">
                                 <i class="bi bi-person me-1"></i> Conectarse
-                            </button>
+                            </a>
                         </li>
                     {% endif %}
 

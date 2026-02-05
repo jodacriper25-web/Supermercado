@@ -25,9 +25,15 @@ urlpatterns = [
     # Quiénes Somos
     path('quienes-somos/', views.quienes_somos, name='quienes_somos'),
 
+    # Acceso (seleccionar Cliente o Admin)
+    path('acceso/', views.acceso, name='acceso'),
+
     # Registro y autenticación
     path('register/', views.register_view, name='register'),
+    path('registro/', views.register_view, name='registro'),
     path('login/', views.login_view, name='login'),
+    path('login-cliente/', views.login_cliente, name='login_cliente'),
+    path('login-admin/', views.login_admin, name='login_admin'),
     path('logout/', views.logout_view, name='logout'),
 
     # Checkout y Pedidos

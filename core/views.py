@@ -142,9 +142,78 @@ def quienes_somos(request):
 
 
 # ---------------------------
+# Página de Acceso (seleccionar Cliente o Administrador)
+# ---------------------------
+def acceso(request):
+    """
+    Página inicial donde los usuarios eligen si son Cliente o Administrador
+    """
+    return render(request, 'acceso.html')
+
+
+# ---------------------------
+# Login de Cliente
+# ---------------------------
+def login_cliente(request):
+    """
+    Login para clientes normales
+    """
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            # Verificar que no sea administrador
+            if not user.is_staff:
+                login(request, user)
+                messages.success(request, f"¡Bienvenido {user.username}!")
+                return redirect('index')
+            else:
+                messages.error(request, "Esta cuenta es de administrador. Usa el login de admin.")
+                return redirect('login_cliente')
+        else:
+            messages.error(request, "Usuario o contraseña incorrectos")
+            return redirect('login_cliente')
+    
+    return render(request, 'login_cliente.html')
+
+
+# ---------------------------
+# Login de Administrador
+# ---------------------------
+def login_admin(request):
+    """
+    Login para administradores del sistema
+    """
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            # Verificar que sea administrador
+            if user.is_staff:
+                login(request, user)
+                messages.success(request, f"¡Bienvenido Admin {user.username}!")
+                return redirect('dashboard_admin')
+            else:
+                messages.error(request, "Esta cuenta no tiene permisos de administrador.")
+                return redirect('login_admin')
+        else:
+            messages.error(request, "Usuario o contraseña incorrectos")
+            return redirect('login_admin')
+    
+    return render(request, 'login_admin.html')
+
+
+# ---------------------------
 # Registro de cliente
 # ---------------------------
 def register_view(request):
+    """
+    Página de registro de clientes
+    """
     if request.method == "POST":
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -154,15 +223,15 @@ def register_view(request):
         # Validaciones
         if password != password2:
             messages.error(request, "Las contraseñas no coinciden")
-            return redirect('index')
+            return redirect('register')
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "El nombre de usuario ya existe")
-            return redirect('index')
+            return redirect('register')
 
         if User.objects.filter(email=email).exists():
             messages.error(request, "El correo electrónico ya está registrado")
-            return redirect('index')
+            return redirect('register')
 
         # Crear usuario
         user = User.objects.create_user(username=username, email=email, password=password)
@@ -171,11 +240,11 @@ def register_view(request):
 
         # Loguear automáticamente
         login(request, user)
-        messages.success(request, "Registro exitoso. ¡Bienvenido!")
+        messages.success(request, "¡Registro exitoso! Bienvenido a Supermercado Yaruquíes")
         return redirect('index')
 
-    # Si no es POST, redirigir a la página principal
-    return redirect('index')
+    # Si es GET, mostrar formulario de registro
+    return render(request, 'registro.html')
 
 
 # ---------------------------
