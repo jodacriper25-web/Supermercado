@@ -13,6 +13,9 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
+# Vista personalizada para errores CSRF (usar string para evitar importación circular)
+CSRF_FAILURE_VIEW = 'core.views.csrf_failure_view'
+
 # 🔒 Headers de Seguridad para Producción
 if not DEBUG:
     SECURE_SSL_REDIRECT = True

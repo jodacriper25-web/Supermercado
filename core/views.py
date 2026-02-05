@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -14,6 +15,19 @@ import random
 import logging
 
 logger = logging.getLogger('core')
+
+
+# ---------------------------
+# Vista personalizada para errores CSRF
+# ---------------------------
+def csrf_failure_view(request, reason=""):
+    """
+    Vista personalizada para manejar errores CSRF.
+    Redirige a la página de login con un parámetro para recargar el token.
+    """
+    logger.warning(f'CSRF Error: {reason}')
+    # Redirigir a login_cliente con parámetro para forzar recarga
+    return redirect(f'{request.path}?csrf_error=true' if request.path != '/' else 'login_cliente?csrf_error=true')
 
 # Mapeo de términos de categorías del XML a las 5 categorías principales
 # Cada categoría agrupa múltiples términos que podrían venir del XML
@@ -151,6 +165,7 @@ def quienes_somos(request):
 # ---------------------------
 # Página de Acceso (seleccionar Cliente o Administrador)
 # ---------------------------
+@never_cache
 def acceso(request):
     """
     Página inicial donde los usuarios eligen si son Cliente o Administrador
@@ -161,6 +176,7 @@ def acceso(request):
 # ---------------------------
 # Login de Cliente
 # ---------------------------
+@never_cache
 @rate_limit_login
 def login_cliente(request):
     """
@@ -194,6 +210,7 @@ def login_cliente(request):
 # ---------------------------
 # Login de Administrador
 # ---------------------------
+@never_cache
 @rate_limit_login
 def login_admin(request):
     """
@@ -267,6 +284,7 @@ def register_view(request):
 # ---------------------------
 # Login de usuario
 # ---------------------------
+@never_cache
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -287,9 +305,16 @@ def login_view(request):
 # ---------------------------
 # Logout de usuario
 # ---------------------------
+@never_cache
+@require_POST
 def logout_view(request):
+    """
+    Cierra la sesión del usuario.
+    Solo acepta POST para prevenir ataques CSRF y problemas de caché del navegador.
+    """
     logout(request)
     messages.success(request, "Has cerrado sesión correctamente")
+    # Redirigir a acceso usando GET para evitar el mensaje de resubmisión de formulario
     return redirect('acceso')
 
 
