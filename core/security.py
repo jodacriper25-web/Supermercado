@@ -1,17 +1,20 @@
 """
 Rate limiting utilities for protecting login endpoints
 """
-from django.core.cache import cache
 from django.contrib import messages
 from django.shortcuts import redirect
 from functools import wraps
 import logging
+import time
 
 logger = logging.getLogger('django.security')
 
 # Configuration
 LOGIN_ATTEMPT_LIMIT = 5  # Max attempts
 LOGIN_ATTEMPT_WINDOW = 300  # 5 minutes in seconds
+
+# In-memory storage for rate limiting (works in development without Redis/Memcached)
+login_attempts_cache = {}
 
 
 def get_client_ip(request):
@@ -33,10 +36,16 @@ def rate_limit_login(view_func):
     def wrapper(request, *args, **kwargs):
         if request.method == 'POST':
             client_ip = get_client_ip(request)
-            cache_key = f'login_attempts_{client_ip}'
+            current_time = time.time()
             
-            # Obtener intentos actuales
-            attempts = cache.get(cache_key, 0)
+            # Limpiar intentos antiguos (más viejos que la ventana)
+            window_start = current_time - LOGIN_ATTEMPT_WINDOW
+            if client_ip in login_attempts_cache:
+                login_attempts_cache[client_ip] = [
+                    t for t in login_attempts_cache[client_ip] if t > window_start
+                ]
+            
+            attempts = len(login_attempts_cache.get(client_ip, []))
             
             if attempts >= LOGIN_ATTEMPT_LIMIT:
                 # Log security incident
@@ -52,8 +61,10 @@ def rate_limit_login(view_func):
                 )
                 return redirect(request.path)
             
-            # Incrementar contador
-            cache.set(cache_key, attempts + 1, LOGIN_ATTEMPT_WINDOW)
+            # Registrar este intento
+            if client_ip not in login_attempts_cache:
+                login_attempts_cache[client_ip] = []
+            login_attempts_cache[client_ip].append(current_time)
         
         return view_func(request, *args, **kwargs)
     
@@ -65,8 +76,8 @@ def check_login_success(request):
     Limpiar intentos fallidos después de login exitoso
     """
     client_ip = get_client_ip(request)
-    cache_key = f'login_attempts_{client_ip}'
-    cache.delete(cache_key)
+    if client_ip in login_attempts_cache:
+        del login_attempts_cache[client_ip]
     logger.info(f'Successful login from IP {client_ip}')
 
 
