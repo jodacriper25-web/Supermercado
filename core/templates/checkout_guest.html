@@ -66,7 +66,7 @@
                 <h5 class="modal-title fw-bold">Acceder a Supermercado Yaruquíes</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="post" action="{% url 'login' %}">
+            <form method="post" action="{% url 'login_cliente' %}">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="mb-3">
@@ -96,7 +96,7 @@
                 <h5 class="modal-title fw-bold">Crear Cuenta</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="post" action="{% url 'register' %}">
+            <form method="post" action="{% url 'registro' %}">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="mb-3">

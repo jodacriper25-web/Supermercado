@@ -100,7 +100,7 @@ def checkout_view(request):
     cart = request.session.get('cart', {})
     if not cart:
         messages.warning(request, "Tu carrito está vacío")
-        return redirect('index')
+        return redirect('inicio')
     
     if request.user.is_authenticated:
         # Usuario logueado - mostrar formulario de pedido
@@ -152,7 +152,7 @@ def crear_pedido(request):
         request.session['cart'] = {}
         
         messages.success(request, "¡Pedido realizado con éxito! Te contactaremos pronto.")
-        return redirect('index')
+        return redirect('inicio')
     
     # Si no es POST, redirigir al checkout
     return redirect('checkout')

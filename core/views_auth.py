@@ -17,13 +17,13 @@ def registro(request):
             # Loguear automáticamente
             login(request, user)
             messages.success(request, "Registro exitoso. Bienvenido!")
-            return redirect('index')
+            return redirect('inicio')
         else:
             # Si el formulario no es válido, mostrar errores
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
-            return redirect('index')
+            return redirect('registro')
     
-    # Si es GET, solo redirigir al index
-    return redirect('index')
+    # Si es GET, solo redirigir al registro
+    return redirect('registro')

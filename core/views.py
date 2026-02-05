@@ -194,7 +194,7 @@ def login_cliente(request):
                 check_login_success(request)
                 log_login_attempt(request, username, success=True)
                 messages.success(request, f"¡Bienvenido {user.username}!")
-                return redirect('index')
+                return redirect('inicio')
             else:
                 log_login_attempt(request, username, success=False)
                 messages.error(request, "Esta cuenta es de administrador. Usa el login de admin.")
@@ -257,15 +257,15 @@ def register_view(request):
         # Validaciones
         if password != password2:
             messages.error(request, "Las contraseñas no coinciden")
-            return redirect('register')
+            return redirect('registro')
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "El nombre de usuario ya existe")
-            return redirect('register')
+            return redirect('registro')
 
         if User.objects.filter(email=email).exists():
             messages.error(request, "El correo electrónico ya está registrado")
-            return redirect('register')
+            return redirect('registro')
 
         # Crear usuario
         user = User.objects.create_user(username=username, email=email, password=password)
@@ -293,13 +293,13 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, f"¡Bienvenido {user.username}!")
-            return redirect('index')
+            return redirect('inicio')
         else:
             messages.error(request, "Usuario o contraseña incorrectos")
-            return redirect('index')
+            return redirect('inicio')
     
     # Si no es POST, redirigir a la página principal
-    return redirect('index')
+    return redirect('inicio')
 
 
 # ---------------------------

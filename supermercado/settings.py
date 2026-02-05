@@ -114,8 +114,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # settings.py
 
-LOGIN_URL = 'index'
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_URL = 'login_cliente'
+LOGIN_REDIRECT_URL = 'inicio'
 
 # LOGGING CONFIGURATION
 import logging.handlers
