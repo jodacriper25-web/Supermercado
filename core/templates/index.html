@@ -1,5 +1,5 @@
-{% load static %}
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Supermercado Yaruquíes | Calidad y Frescura en Riobamba{% endblock %}
 
@@ -30,6 +30,33 @@
 
     <!-- Sección de Productos -->
     <main class="container py-5">
+        <!-- Filtros por Categoría -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="fw-bold mb-3">Categorías</h3>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'index' %}" class="btn btn-danger">
+                        Todos
+                    </a>
+                    <a href="{% url 'categoria' slug='consumo' %}" class="btn btn-outline-secondary">
+                        Consumo
+                    </a>
+                    <a href="{% url 'categoria' slug='limpieza-y-hogar' %}" class="btn btn-outline-secondary">
+                        Limpieza y Hogar
+                    </a>
+                    <a href="{% url 'categoria' slug='bebidas' %}" class="btn btn-outline-secondary">
+                        Bebidas
+                    </a>
+                    <a href="{% url 'categoria' slug='congelados' %}" class="btn btn-outline-secondary">
+                        Congelados
+                    </a>
+                    <a href="{% url 'categoria' slug='confiteria' %}" class="btn btn-outline-secondary">
+                        Confitería
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <h2 class="fw-bold mb-4">Productos Destacados</h2>
         <div class="row g-4">
             {% for p in productos %}
@@ -63,7 +90,8 @@
                         </div>
                         {% if not user.is_staff %}
                         <button class="btn btn-buy w-100 rounded-pill py-2 fw-bold hover-pulse" 
-                                onclick="addToCart('{{ p.id }}', '{{ p.nombre }}')"
+                                data-product-id="{{ p.id }}"
+                                data-product-name="{{ p.nombre }}"
                                 {% if p.existencia_bodega <= 0 %}disabled{% endif %}>
                             {% if p.existencia_bodega > 0 %}
                                 <i class="bi bi-cart-plus me-1"></i> Agregar
@@ -171,8 +199,8 @@
         button.addEventListener('click', function(e) {
             if (!this.disabled) {
                 e.preventDefault();
-                const productId = this.getAttribute('onclick').match(/'([^']+)'/)[1];
-                const productName = this.getAttribute('onclick').match(/'([^']+)'/)[2];
+                const productId = this.getAttribute('data-product-id');
+                const productName = this.getAttribute('data-product-name');
                 addToCart(productId, productName);
             }
         });
