@@ -63,14 +63,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="text-white-50">Subtotal:</span>
-                                        <span class="text-white fw-bold" id="cart-subtotal">$0.00</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <span class="text-white-50">Envío:</span>
-                                        <span class="text-white-50 small">Calculado en checkout</span>
-                                    </div>
+                                    
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <span class="text-white fs-5 fw-bold">Total:</span>
                                         <span class="text-danger fs-4 fw-bold" id="cart-total">$0.00</span>
@@ -278,7 +271,6 @@ async function renderCart() {
     }
     
     // Actualizar totales
-    document.getElementById('cart-subtotal').textContent = formatPrice(subtotal);
     document.getElementById('cart-total').textContent = formatPrice(subtotal);
 }
 
@@ -303,8 +295,8 @@ function proceedToCheckout() {
     loginModal.show();
     showToast('Debes iniciar sesión para continuar', 'warning');
     {% else %}
-    // Redirigir a la página de checkout
-    window.location.href = '/checkout/';
+    // Redirigir a la página de facturación
+    window.location.href = '{% url "facturacion" %}';
     {% endif %}
 }
 

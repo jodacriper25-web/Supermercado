@@ -14,7 +14,7 @@
                     <div class="hero-overlay"></div>
                     <div class="carousel-caption d-none d-md-block text-start hero-caption">
                         <h1 class="display-4 fw-bold text-uppercase text-white">Lo mejor de Yaruquíes</h1>
-                        <p class="lead text-white-50">Productos frescos y precios justos, directo a tu hogar.</p>
+                        <p class="lead text-white-50">Productos frescos y precios justos, al alcance de tu bolsillo.</p>
                     </div>
                 </div>
             </div>
@@ -30,30 +30,17 @@
 
     <!-- Sección de Productos -->
     <main class="container py-5">
-        <!-- Filtros por Categoría -->
+        <!-- Barra de Búsqueda -->
         <div class="row mb-5">
             <div class="col-12">
-                <h3 class="fw-bold mb-3">Categorías</h3>
-                <div class="d-flex flex-wrap gap-2">
-                    <a href="{% url 'inicio' %}" class="btn btn-danger">
-                        Todos
-                    </a>
-                    <a href="{% url 'categoria' slug='consumo' %}" class="btn btn-outline-secondary">
-                        Consumo
-                    </a>
-                    <a href="{% url 'categoria' slug='limpieza-y-hogar' %}" class="btn btn-outline-secondary">
-                        Limpieza y Hogar
-                    </a>
-                    <a href="{% url 'categoria' slug='bebidas' %}" class="btn btn-outline-secondary">
-                        Bebidas
-                    </a>
-                    <a href="{% url 'categoria' slug='congelados' %}" class="btn btn-outline-secondary">
-                        Congelados
-                    </a>
-                    <a href="{% url 'categoria' slug='confiteria' %}" class="btn btn-outline-secondary">
-                        Confitería
-                    </a>
-                </div>
+                <form method="post" action="{% url 'buscar' %}" class="input-group input-group-lg">
+                    {% csrf_token %}
+                    <button class="btn btn-danger rounded-start-4 px-4" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <input type="text" name="busqueda" class="form-control bg-white border-0 rounded-end-4" 
+                           placeholder="Buscar productos..." autocomplete="off" style="box-shadow: none;">
+                </form>
             </div>
         </div>
 
@@ -108,6 +95,61 @@
                     <i class="bi bi-search fs-1 text-secondary mb-3"></i>
                     <h4 class="text-secondary">No encontramos productos en esta sección.</h4>
                     <a href="{% url 'inicio' %}" class="btn btn-outline-danger rounded-pill mt-3">Ver todo el catálogo</a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Ofertas Especiales para San Valentín -->
+        <h2 class="fw-bold mb-4 mt-5">Ofertas Disponibles</h2>
+        <div class="row g-4 mb-5">
+            {% for o in ofertas %}
+            <div class="col-6 col-md-4 fade-up">
+                <article class="card product-card h-100 bg-black border-secondary">
+                    <div class="img-wrapper position-relative ratio ratio-1x1 rounded-4 overflow-hidden shadow-sm">
+                        {% if o.precio_oferta %}
+                            <span class="badge-offer position-absolute top-0 start-0 m-3 z-2">OFERTA</span>
+                        {% endif %}
+                        {% if o.existencia_bodega <= 0 %}
+                            <div class="out-of-stock-overlay">
+                                <span>AGOTADO</span>
+                            </div>
+                        {% endif %}
+                        {% if o.imagen %}
+                            <img src="{{ o.imagen.url }}" class="img-fluid p-4 object-fit-contain hover-scale" alt="{{ o.nombre }}" loading="lazy">
+                        {% else %}
+                            <img src="{% static 'img/products/placeholder.svg' %}" class="img-fluid p-4 object-fit-contain" alt="{{ o.nombre }}" loading="lazy">
+                        {% endif %}
+                    </div>
+                    <div class="card-body px-1 pt-3 text-start d-flex flex-column bg-black">
+                        <small class="text-danger fw-bold text-uppercase ls-1" style="font-size: 0.7rem;">{{ o.categoria.nombre }}</small>
+                        <h6 class="card-title fw-bold text-white mt-1 mb-2 text-truncate">{{ o.nombre }}</h6>
+                        <div class="mt-auto d-flex align-items-center gap-2 mb-3">
+                            {% if o.precio_oferta %}
+                                <span class="fs-5 fw-bold text-white">${{ o.precio_oferta }}</span>
+                                <span class="text-secondary text-decoration-line-through small">${{ o.precio_a }}</span>
+                            {% else %}
+                                <span class="fs-5 fw-bold text-white">${{ o.precio_a }}</span>
+                            {% endif %}
+                        </div>
+                        {% if not user.is_staff %}
+                        <button class="btn btn-buy w-100 rounded-pill py-2 fw-bold hover-pulse" 
+                                data-product-id="{{ o.id }}"
+                                data-product-name="{{ o.nombre }}"
+                                {% if o.existencia_bodega <= 0 %}disabled{% endif %}>
+                            {% if o.existencia_bodega > 0 %}
+                                <i class="bi bi-cart-plus me-1"></i> Agregar
+                            {% else %}
+                                Sin Stock
+                            {% endif %}
+                        </button>
+                        {% endif %}
+                    </div>
+                </article>
+            </div>
+            {% empty %}
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-gift fs-1 text-secondary mb-3"></i>
+                    <h4 class="text-secondary">Próximamente más ofertas especiales.</h4>
                 </div>
             {% endfor %}
         </div>

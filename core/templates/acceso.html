@@ -13,12 +13,26 @@
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <style>
         body {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            background-image: url('{% static "img/login.png" %}');
+            background-attachment: fixed;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Inter', sans-serif;
+            position: relative;
+        }
+
+        /* Capa transparente oscura sobre la imagen (efecto similar al hero) */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+            z-index: 1;
         }
 
         .access-container {
@@ -30,6 +44,8 @@
             width: 90%;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 2;
         }
 
         .access-header {
@@ -42,15 +58,9 @@
         }
 
         .logo {
-            font-size: 48px;
-            font-weight: 800;
-            color: #1a1a1a;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-        }
-
-        .logo span {
-            color: #9B1C1C;
+            max-width: 250px;
+            height: auto;
+            margin-bottom: 20px;
         }
 
         .subtitle {
@@ -150,14 +160,14 @@
 
         /* Opción de Cliente */
         .access-option.client {
-            background: linear-gradient(135deg, #00b894 0%, #00a883 100%);
-            border-color: rgba(0, 184, 148, 0.3);
+            background: linear-gradient(135deg, #9B1C1C 0%, #7a1616 100%);
+            border-color: rgba(155, 28, 28, 0.3);
         }
 
         .access-option.client:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 50px rgba(0, 184, 148, 0.3);
-            border-color: rgba(0, 184, 148, 0.6);
+            box-shadow: 0 20px 50px rgba(155, 28, 28, 0.4);
+            border-color: rgba(155, 28, 28, 0.6);
         }
 
         /* Opción de Administrador */
@@ -180,14 +190,14 @@
         }
 
         .footer-link a {
-            color: #9B1C1C;
+            color: #0d6efd;
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s;
         }
 
         .footer-link a:hover {
-            color: #d4291e;
+            color: #0a58ca;
             text-decoration: underline;
         }
     </style>
@@ -196,8 +206,7 @@
     <div class="access-container">
         <div class="access-header">
             <div class="logo-area">
-                <div class="logo">SUPERMERCADO <span>YARUQUÍES</span></div>
-                <div class="subtitle">Calidad y Frescura</div>
+                <img src="{% static 'img/logo.png' %}" alt="Supermercado Yaruquíes" class="logo">
             </div>
             <h1 class="access-title">Bienvenido</h1>
             <p class="access-description">Selecciona tu tipo de acceso</p>

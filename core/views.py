@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.urls import reverse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
@@ -9,6 +10,7 @@ from core.models import Categoria, Producto
 from core.security import rate_limit_login, check_login_success, log_login_attempt
 from django.db.models import Q, F
 from django.conf import settings
+from urllib.parse import urlencode
 import os
 import json
 import random
@@ -90,10 +92,33 @@ CATEGORIAS_DICT = dict(CATEGORIAS_PRINCIPALES)
 def index(request):
     categorias = Categoria.objects.all()
     
-    # Mostrar 25 productos aleatorios para la página de inicio
-    productos = list(Producto.objects.filter(activo=True))
+    # Mostrar 10 productos de consumo para San Valentín
+    # Construir consulta Q para la categoría consumo
+    terminos_consumo = CATEGORIA_MAP['consumo']
+    query_consumo = Q()
+    for termino in terminos_consumo:
+        query_consumo |= Q(categoria__nombre__icontains=termino)
+    
+    productos = list(Producto.objects.filter(activo=True).filter(query_consumo))
     random.shuffle(productos)
-    productos = productos[:25]
+    productos = productos[:10]
+    
+    # Ofertas especiales para San Valentín: 1 galleta (no manicho con galleta), 1 peluche, 1 chocolate
+    oferta_galleta = list(Producto.objects.filter(activo=True, nombre__icontains='galleta').exclude(nombre__icontains='manicho'))
+    oferta_peluche = list(Producto.objects.filter(activo=True, nombre__icontains='peluche'))
+    oferta_chocolate = list(Producto.objects.filter(activo=True, nombre__icontains='chocolate'))
+    
+    # Tomar 1 producto de cada tipo si existe
+    ofertas = []
+    if oferta_galleta:
+        ofertas.append(oferta_galleta[0])
+    if oferta_peluche:
+        ofertas.append(oferta_peluche[0])
+    if oferta_chocolate:
+        ofertas.append(oferta_chocolate[0])
+    
+    # Mezclar para que no siempre aparezcan en el mismo orden
+    random.shuffle(ofertas)
 
     # Filtro por categoría (desde query param ?categoria=...)
     categoria_slug = request.GET.get('categoria')
@@ -149,6 +174,7 @@ def index(request):
         'categorias': categorias,
         'categorias_principales': CATEGORIAS_PRINCIPALES,
         'productos': productos,
+        'ofertas': ofertas,
         'hero_images': hero_images,
         'categoria_activa': categoria_slug,
         'q': q or '',
@@ -393,3 +419,167 @@ def categoria_view(request, slug):
         'categoria_activa': slug,
         'categoria_nombre': categoria_nombre,
     })
+
+
+@require_POST
+def buscar(request):
+    """
+    Vista para manejar búsquedas de productos.
+    Recibe POST y redirige a la página de inicio con los resultados.
+    """
+    busqueda = request.POST.get('busqueda', '').strip()
+    if busqueda:
+        return redirect(f"{reverse('inicio')}?{urlencode({'q': busqueda})}")
+    else:
+        return redirect('inicio')
+
+
+@never_cache
+def facturacion_view(request):
+    """
+    Vista para mostrar el formulario de facturación y datos del carrito.
+    """
+    from django.contrib.auth.decorators import login_required
+    if not request.user.is_authenticated:
+        return redirect('login_cliente')
+    
+    contexto = {
+        'usuario': request.user,
+        'email': request.user.email if request.user.email else '',
+    }
+    return render(request, 'factura.html', contexto)
+
+
+@require_POST
+@never_cache
+def procesar_factura(request):
+    """
+    Vista para procesar la factura, generar PDF y enviar a WhatsApp.
+    """
+    if not request.user.is_authenticated:
+        return redirect('login_cliente')
+    
+    # Obtener datos del cliente
+    nombre = request.POST.get('nombre', '').strip()
+    apellidos = request.POST.get('apellidos', '').strip()
+    email = request.POST.get('email', '').strip()
+    telefono = request.POST.get('telefono', '').strip()
+    ciudad = request.POST.get('ciudad', '').strip()
+    direccion = request.POST.get('direccion', '').strip()
+    
+    # Validaciones
+    if not all([nombre, apellidos, email, telefono, ciudad, direccion]):
+        messages.error(request, 'Por favor completa todos los campos.')
+        return redirect('facturacion')
+    
+    try:
+        # Generar PDF
+        from io import BytesIO
+        from reportlab.lib.pagesizes import letter
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import inch
+        from reportlab.lib import colors
+        from datetime import datetime
+        
+        # Crear buffer para el PDF
+        pdf_buffer = BytesIO()
+        doc = SimpleDocTemplate(pdf_buffer, pagesize=letter, topMargin=0.5*inch, bottomMargin=0.5*inch)
+        
+        # Estilos
+        styles = getSampleStyleSheet()
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=24,
+            textColor=colors.HexColor('#DC3545'),
+            spaceAfter=30,
+            alignment=1  # Centro
+        )
+        
+        heading_style = ParagraphStyle(
+            'CustomHeading',
+            parent=styles['Heading2'],
+            fontSize=12,
+            textColor=colors.HexColor('#333333'),
+            spaceAfter=10,
+            textTransform='uppercase'
+        )
+        
+        # Contenido del PDF
+        story = []
+        
+        # Título
+        story.append(Paragraph("FACTURA DE COMPRA", title_style))
+        story.append(Spacer(1, 0.2*inch))
+        
+        # Información del supermercado
+        info_text = "SUPERMERCADO YARUQUÍES<br/>Yaruquíes, Riobamba - Ecuador<br/>Teléfono: +593 98 361 2109<br/>Email: supermercadoyaruquies@gmail.com"
+        story.append(Paragraph(info_text, styles['Normal']))
+        story.append(Spacer(1, 0.2*inch))
+        
+        # Fecha y número de factura
+        fecha = datetime.now().strftime("%d/%m/%Y %H:%M")
+        story.append(Paragraph(f"<b>Fecha:</b> {fecha}", styles['Normal']))
+        story.append(Spacer(1, 0.1*inch))
+        
+        # Datos del cliente
+        story.append(Paragraph("CLIENTE", heading_style))
+        cliente_info = f"<b>Nombre:</b> {nombre} {apellidos}<br/><b>Email:</b> {email}<br/><b>Teléfono:</b> {telefono}<br/><b>Ciudad:</b> {ciudad}<br/><b>Dirección:</b> {direccion}"
+        story.append(Paragraph(cliente_info, styles['Normal']))
+        story.append(Spacer(1, 0.2*inch))
+        
+        # Tabla de productos (recuperar del carrito del cliente)
+        story.append(Paragraph("DETALLE DE COMPRA", heading_style))
+        story.append(Spacer(1, 0.1*inch))
+        
+        # Datos de la tabla
+        data_table = [['Producto', 'Categoría', 'Cantidad', 'Precio Unit.', 'Subtotal']]
+        
+        # Aquí deberíamos obtener los productos del carrito del usuario
+        # Por ahora, ponemos un ejemplo
+        total = 0
+        
+        # Tabla de ejemplo (en producción, obtener del sesión/carrito)
+        table = Table(data_table, colWidths=[2.5*inch, 1.5*inch, 0.8*inch, 1*inch, 1*inch])
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#DC3545')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('ALIGN', (3, 0), (-1, -1), 'RIGHT'),
+        ]))
+        story.append(table)
+        story.append(Spacer(1, 0.3*inch))
+        
+        # Total
+        story.append(Paragraph("<b>Total a Pagar:</b> Ver detalle en el carrito", styles['Normal']))
+        story.append(Spacer(1, 0.4*inch))
+        
+        # Pie de página
+        footer_text = "Gracias por tu compra. Te contactaremos para confirmar tu pedido."
+        story.append(Paragraph(footer_text, styles['Normal']))
+        
+        # Construir PDF
+        doc.build(story)
+        
+        # Preparar respuesta
+        pdf_buffer.seek(0)
+        
+        # Crear respuesta con el PDF
+        response = HttpResponse(pdf_buffer, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="factura_compra.pdf"'
+        
+        # Guardar en sesión para posterior envío a WhatsApp
+        request.session['factura_generada'] = True
+        
+        return response
+    
+    except Exception as e:
+        logger.error(f'Error generando factura: {str(e)}')
+        messages.error(request, 'Error al generar la factura. Intenta nuevamente.')
+        return redirect('facturacion')

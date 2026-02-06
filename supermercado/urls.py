@@ -20,6 +20,9 @@ urlpatterns = [
     # Página principal (productos)
     path('inicio/', views.index, name='inicio'),
 
+    # Búsqueda de productos
+    path('buscar/', views.buscar, name='buscar'),
+
     # Categoría con slug
     path('categoria/<str:slug>/', views.categoria_view, name='categoria'),
 
@@ -50,6 +53,10 @@ urlpatterns = [
 
     # Carrito de compras
     path('carrito/', views.cart_detail, name='cart_detail'),
+
+    # Facturación
+    path('facturacion/', views.facturacion_view, name='facturacion'),
+    path('facturacion/procesar/', views.procesar_factura, name='procesar_factura'),
     
     # API de productos (para el carrito)
     path('api/productos/', views.productos_json, name='productos_json'),

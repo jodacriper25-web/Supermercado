@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sistema de Facturación | Supermercado Yaruquíes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'inicio' %}" class="text-decoration-none text-white-50">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'cart_detail' %}" class="text-decoration-none text-white-50">Carrito</a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Facturación</li>
+                </ol>
+            </nav>
+            <h1 class="fw-bold text-white mb-2">Sistema de Facturación</h1>
+            <p class="text-white-50">Completa tus datos para generar la factura de compra</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Columna Izquierda: Resumen del Carrito -->
+        <div class="col-lg-5">
+            <div class="card bg-dark border-secondary rounded-4 h-100">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold text-white mb-4">
+                        <i class="bi bi-bag-check text-danger me-2"></i>Resumen del Pedido
+                    </h4>
+                    
+                    <!-- Lista de productos del carrito -->
+                    <div id="carrito-resumen" class="mb-4">
+                        <!-- Se llenarán con JavaScript -->
+                    </div>
+
+                    <hr class="border-secondary">
+
+                    <!-- Totales -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-white fw-bold">Total:</span>
+                            <span class="text-danger fs-5 fw-bold" id="total-resumen">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Botón Volver -->
+                    <a href="{% url 'cart_detail' %}" class="btn btn-outline-light w-100 rounded-pill">
+                        <i class="bi bi-arrow-left me-2"></i>Volver al Carrito
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Formulario de Facturación -->
+        <div class="col-lg-7">
+            <div class="card bg-dark border-secondary rounded-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold text-white mb-4">
+                        <i class="bi bi-file-text text-danger me-2"></i>Datos de Entrega
+                    </h4>
+
+                    <form id="form-factura" method="POST" action="{% url 'procesar_factura' %}">
+                        {% csrf_token %}
+
+                        <div class="row g-3 mb-4">
+                            <!-- Nombre -->
+                            <div class="col-md-6">
+                                <label for="nombre" class="form-label text-white-50 small fw-bold">
+                                    Nombre <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control bg-black text-white border-secondary rounded-3" 
+                                    id="nombre" 
+                                    name="nombre"
+                                    placeholder="Tu nombre"
+                                    required
+                                >
+                            </div>
+
+                            <!-- Apellidos -->
+                            <div class="col-md-6">
+                                <label for="apellidos" class="form-label text-white-50 small fw-bold">
+                                    Apellidos <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control bg-black text-white border-secondary rounded-3" 
+                                    id="apellidos" 
+                                    name="apellidos"
+                                    placeholder="Tus apellidos"
+                                    required
+                                >
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="email" class="form-label text-white-50 small fw-bold">
+                                    Email <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="email" 
+                                    class="form-control bg-black text-white border-secondary rounded-3" 
+                                    id="email" 
+                                    name="email"
+                                    placeholder="tu@email.com"
+                                    value="{{ email }}"
+                                    required
+                                >
+                            </div>
+
+                            <!-- Teléfono -->
+                            <div class="col-md-6">
+                                <label for="telefono" class="form-label text-white-50 small fw-bold">
+                                    Teléfono <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="tel" 
+                                    class="form-control bg-black text-white border-secondary rounded-3" 
+                                    id="telefono" 
+                                    name="telefono"
+                                    placeholder="+593 9XX XXX XXXX"
+                                    required
+                                >
+                            </div>
+
+                            <!-- Ciudad -->
+                            <div class="col-md-6">
+                                <label for="ciudad" class="form-label text-white-50 small fw-bold">
+                                    Ciudad <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control bg-black text-white border-secondary rounded-3" 
+                                    id="ciudad" 
+                                    name="ciudad"
+                                    placeholder="Tu ciudad"
+                                    value="Riobamba"
+                                    required
+                                >
+                            </div>
+
+                            <!-- Dirección -->
+                            <div class="col-md-6">
+                                <label for="direccion" class="form-label text-white-50 small fw-bold">
+                                    Dirección <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control bg-black text-white border-secondary rounded-3" 
+                                    id="direccion" 
+                                    name="direccion"
+                                    placeholder="Tu dirección completa"
+                                    required
+                                >
+                            </div>
+
+                            <!-- Dirección Completa -->
+                            <div class="col-12">
+                                <label for="detalles" class="form-label text-white-50 small fw-bold">
+                                    Detalles Adicionales (Opcional)
+                                </label>
+                                <textarea 
+                                    class="form-control bg-black text-white border-secondary rounded-3" 
+                                    id="detalles" 
+                                    name="detalles"
+                                    rows="3"
+                                    placeholder="Ej: Apartamento, piso, referencias..."
+                                    style="resize: none;"
+                                ></textarea>
+                            </div>
+                        </div>
+
+                        <hr class="border-secondary mb-4">
+
+                        <!-- Información Importante -->
+                        <div class="alert alert-info rounded-3 mb-4" style="background-color: rgba(13, 110, 253, 0.15); border-color: #0d6efd;">
+                            <i class="bi bi-info-circle me-2" style="color: #0d6efd;"></i>
+                            <small>
+                                <strong>Información importante:</strong> Al hacer clic en "Generar Factura y Enviar", 
+                                se descargará tu factura y se abrirá WhatsApp para que contactes con nosotros.
+                            </small>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="d-grid gap-2">
+                            <button 
+                                type="button" 
+                                id="btnEnviar" 
+                                class="btn btn-danger py-3 rounded-pill fw-bold shadow-sm"
+                                style="font-size: 1rem;"
+                            >
+                                <i class="bi bi-whatsapp me-2"></i>Generar Factura y Enviar por WhatsApp (Proximamente)
+                            </button>
+                        </div>
+
+                        <!-- Nota de contacto -->
+                        <p class="text-center text-white-50 small mt-3 mb-0">
+                            Nuestro equipo se contactará contigo para confirmar tu pedido
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para cargar carrito y manejar envío -->
+<script>
+const CART_KEY = 'supermercado_yaruquies_cart';
+const PRODUCTS_API_URL = '/api/productos/';
+let productosCache = {};
+
+document.addEventListener('DOMContentLoaded', function() {
+    cargarResumenCarrito();
+    document.getElementById('btnEnviar').addEventListener('click', enviarFactura);
+});
+
+// Obtener carrito del localStorage
+function getCart() {
+    const cart = localStorage.getItem(CART_KEY);
+    return cart ? JSON.parse(cart) : {};
+}
+
+// Obtener productos del servidor
+async function fetchProducts() {
+    try {
+        const response = await fetch(PRODUCTS_API_URL);
+        if (response.ok) {
+            const data = await response.json();
+            data.productos.forEach(p => {
+                productosCache[p.id] = p;
+            });
+        }
+    } catch (error) {
+        console.log('No se pudieron cargar los productos desde la API');
+    }
+}
+
+async function cargarResumenCarrito() {
+    const cart = getCart();
+    const container = document.getElementById('carrito-resumen');
+    
+    // Cargar productos
+    await fetchProducts();
+    
+    if (Object.keys(cart).length === 0) {
+        container.innerHTML = '<p class="text-white-50 text-center py-3">Tu carrito está vacío</p>';
+        document.getElementById('btnEnviar').disabled = true;
+        return;
+    }
+
+    let html = '';
+    let total = 0;
+    
+    for (const productId in cart) {
+        const quantity = cart[productId];
+        const product = productosCache[productId];
+        
+        if (!product) continue;
+        
+        const precio = parseFloat(product.precio) || 0;
+        const subtotal = precio * quantity;
+        total += subtotal;
+
+        html += `
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom border-secondary">
+                <div>
+                    <div class="text-white small fw-bold">${product.nombre.substring(0, 35)}</div>
+                    <div class="text-white-50 small">
+                        <span class="badge bg-danger me-2">x${quantity}</span>
+                        $${precio.toFixed(2)}
+                    </div>
+                </div>
+                <div class="text-danger fw-bold">$${subtotal.toFixed(2)}</div>
+            </div>
+        `;
+    }
+
+    container.innerHTML = html;
+    document.getElementById('total-resumen').textContent = '$' + total.toFixed(2);
+}
+
+function enviarFactura() {
+    const form = document.getElementById('form-factura');
+    
+    // Validar formulario
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    // Deshabilitar botón durante el envío
+    const btn = document.getElementById('btnEnviar');
+    const btnText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Procesando...';
+
+    // Enviar formulario
+    const formData = new FormData(form);
+    
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (response.ok && response.headers.get('content-type').includes('application/pdf')) {
+            // Descargar PDF
+            return response.blob().then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'factura_compra.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+
+                // Abrir WhatsApp
+                setTimeout(() => {
+                    const mensajeWhatsApp = encodeURIComponent(
+                        `Hola Supermercado Yaruquíes, acabo de generar mi factura de compra. ¿Podrías ayudarme a completar mi pedido?`
+                    );
+                    const whatsappLink = `https://wa.me/593983612109?text=${mensajeWhatsApp}`;
+                    window.open(whatsappLink, '_blank');
+
+                    // Limpiar carrito después del envío
+                    localStorage.removeItem(CART_KEY);
+                    
+                    // Mostrar mensaje de éxito y redirigir
+                    setTimeout(() => {
+                        showToast('Factura descargada. Tu navegador abrirá WhatsApp para contactar con nosotros.', 'success');
+                        setTimeout(() => {
+                            window.location.href = '{% url "inicio" %}';
+                        }, 2000);
+                    }, 500);
+                }, 500);
+            });
+        } else if (response.status === 302 || response.status === 301) {
+            // Redireccionada al login
+            window.location.href = '{% url "login_cliente" %}';
+        } else {
+            throw new Error('Error al procesar la factura');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        btn.disabled = false;
+        btn.innerHTML = btnText;
+        showToast('Error al procesar tu factura. Intenta nuevamente.', 'danger');
+    });
+}
+
+function showToast(message, type = 'info') {
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+    
+    const alertClass = type === 'success' ? 'alert-success' : type === 'danger' ? 'alert-danger' : 'alert-info';
+    const toast = document.createElement('div');
+    toast.className = `alert ${alertClass} alert-dismissible fade show`;
+    toast.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
+}
+</script>
+
+{% endblock %}

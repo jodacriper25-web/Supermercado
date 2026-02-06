@@ -73,7 +73,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link position-relative px-2" href="{% url 'cart_detail' %}" aria-label="Carrito">
-                            <i class="bi bi-bag-heart fs-4"></i>
+                            <i class="bi bi-cart3 fs-4"></i>
                             <span id="cart-count" class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill border border-dark">0</span>
                         </a>
                     </li>
@@ -142,64 +142,69 @@
         {% endblock %}
     </main>
 
-    <footer class="footer-premium pt-5 pb-3 mt-auto bg-black text-white-50 border-top border-secondary border-opacity-25">
+    <footer class="footer-premium pt-5 pb-4 mt-auto bg-black text-white-50 border-top border-secondary border-opacity-25">
         <div class="container">
-            <div class="row g-4 mb-5">
+            <!-- Fila principal con 3 columnas -->
+            <div class="row g-5 mb-5">
+                <!-- Columna Izquierda: Logo, Descripción y Redes -->
                 <div class="col-lg-4">
-                    <a class="navbar-brand fw-800 fs-2 mb-3 d-block text-white" href="{% url 'inicio' %}">
+                    <a class="navbar-brand fw-800 fs-3 mb-3 d-block text-white" href="{% url 'inicio' %}">
                         <span class="text-danger">SUPERMERCADO</span> YARUQUÍES
                     </a>
-                    <p class="small pe-lg-5">
-                        Tu supermercado de confianza en Yaruquíes, Riobamba. Productos frescos, precios justos y atención personalizada.
+                    <p class="small mb-4">
+                        Solo en YARUQUÍES SUPERMERCADO encontrarás el 
+                        MENOR PRECIO todos los días del año y una 
+                        gran variedad de productos para AHORRAR aún más.
                     </p>
-                    <div class="social-icons d-flex gap-3 mt-4">
-                        <a href="#" class="text-white fs-5 opacity-75 hover-opacity-100"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="text-white fs-5 opacity-75 hover-opacity-100"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="text-white fs-5 opacity-75 hover-opacity-100"><i class="bi bi-tiktok"></i></a>
+                    <div class="small mb-3">
+                        <strong class="text-white d-block mb-2">Síguenos en nuestras redes sociales:</strong>
+                        <div class="d-flex gap-4">
+                            <span class="opacity-75"><i class="bi bi-facebook me-2"></i>Facebook</span>
+                            <span class="opacity-75"><i class="bi bi-tiktok me-2"></i>TikTok</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-lg-2 col-6">
-                    <h6 class="fw-bold text-white text-uppercase mb-3 small ls-1">Tienda</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2 small">
-                        <li><a href="/" class="text-decoration-none text-white-50 hover-text-white">Inicio</a></li>
-                        <li><a href="#" class="text-decoration-none text-white-50 hover-text-white">Catálogo</a></li>
-                        <li><a href="#" class="text-decoration-none text-white-50 hover-text-white">Ofertas</a></li>
-                    </ul>
+                <!-- Columna Centro: Datos de Contacto -->
+                <div class="col-lg-4">
+                    <h6 class="fw-bold text-white text-uppercase mb-4 small ls-2">Datos de Contacto</h6>
+                    <div class="small">
+                        <div class="mb-3">
+                            <p class="text-secondary mb-1">Dirección:</p>
+                            <p class="mb-0">Padre Lobato, Riobamba 060112</p>
+                            <p class="mb-0">Yaruquíes, Riobamba - Ecuador</p>
+                        </div>
+                        <div class="mb-3">
+                            <p class="text-secondary mb-1">Teléfono:</p>
+                            <p class="mb-0">+593 98 361 2109</p>
+                        </div>
+                        <div>
+                            <p class="text-secondary mb-1">Correo electrónico:</p>
+                            <p class="mb-0">supermercadoyaruquies@gmail.com</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-lg-3 col-6">
-                    <h6 class="fw-bold text-white text-uppercase mb-3 small ls-1">Ayuda</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2 small">
-                        <li><a href="#" class="text-decoration-none text-white-50 hover-text-white">Centro de Soporte</a></li>
-                        <li><a href="#" class="text-decoration-none text-white-50 hover-text-white">Política de Envíos</a></li>
-                        <li><a href="#" class="text-decoration-none text-white-50 hover-text-white">Términos y Condiciones</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-3">
-                    <h6 class="fw-bold text-white text-uppercase mb-3 small ls-1">Contacto</h6>
-                    <ul class="list-unstyled small mb-4">
-                        <li class="mb-2"><i class="bi bi-geo-alt me-2 text-danger"></i> Riobamba, Ecuador</li>
-                        <li class="mb-2"><i class="bi bi-whatsapp me-2 text-danger"></i> +593 99 999 9999</li>
-                        <li><i class="bi bi-envelope me-2 text-danger"></i> hola@supermercadoyaruquies.com</li>
-                    </ul>
-                    <div class="d-flex gap-2 fs-4 text-white-50">
-                        <i class="bi bi-credit-card"></i>
-                        <i class="bi bi-paypal"></i>
+                <!-- Columna Derecha: Tiendas Relacionadas -->
+                <div class="col-lg-4">
+                    <h6 class="fw-bold text-white text-uppercase mb-4 small ls-2">Tiendas Relacionadas</h6>
+                    <div class="small">
+                        <div class="mb-2">
+                            <i class="bi bi-shop me-2 text-danger"></i>Ferretería Palomino
+                        </div>
+                        <div>
+                            <i class="bi bi-shop me-2 text-danger"></i>Panadería y Pastelería "Vital Pan"
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <hr class="border-secondary opacity-25">
+            <hr class="border-secondary border-opacity-25 my-4">
             
-            <div class="row pt-2 align-items-center small">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0">© 2026 Supermercado Yaruquíes. Todos los derechos reservados.</p>
-                </div>
-                <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
-                    <p class="mb-0">Desarrollado con Django Framework</p>
-                </div>
+            <!-- Copyright -->
+            <div class="row pt-2 align-items-center small text-center">
+                <p class="mb-2 text-secondary">© 2026 Supermercado Yaruquíes - Todos los derechos reservados.</p>
+                <p class="mb-0 text-secondary">Desarrollado con Django Framework</p>
             </div>
         </div>
     </footer>

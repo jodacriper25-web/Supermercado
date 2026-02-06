@@ -82,11 +82,11 @@ body {
     align-items: center;
 }
 
-/* Dark / red overlay to tint the image and create consistent look */
+/* Dark overlay - phone filter effect */
 .hero-slide .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(60,10,10,0.80) 50%, rgba(0,0,0,0.70) 100%);
+    background: rgba(0, 0, 0, 0.3);
     z-index: 1;
 }
 
