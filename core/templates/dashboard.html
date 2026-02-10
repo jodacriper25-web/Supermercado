@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - Supermercado Yaruquíes{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* Sobrescribir solo los estilos necesarios para el dashboard */
+    .dashboard-page {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        min-height: 100vh !important;
+    }
+    
+    .dashboard-page .navbar-premium {
+        background: rgba(0, 0, 0, 0.9) !important;
+    }
+    
+    .dashboard-page footer.footer-premium {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Encabezado del Dashboard -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="dashboard-container bg-white rounded-4 shadow-lg p-4">
+                <h1 class="h2 fw-bold mb-0">
+                    <i class="bi bi-speedometer2 text-danger me-2"></i>
+                    Panel de Administración
+                </h1>
+                <p class="text-muted mb-0">Bienvenido, {{ user.username|capfirst }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjetas de Estadísticas -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="dashboard-card card border-0 shadow-sm h-100">
+                <div class="card-header bg-primary text-white rounded-top-4 border-0">
+                    <i class="bi bi-cart-check me-2"></i>
+                    Ventas Hoy
+                </div>
+                <div class="card-body text-center py-4">
+                    <div class="stat-number display-6 fw-bold text-dark">$5,280</div>
+                    <div class="stat-label text-muted small text-uppercase mt-2">Total en ventas</div>
+                    <span class="badge bg-success bg-opacity-10 text-success mt-2">+12%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="dashboard-card card border-0 shadow-sm h-100">
+                <div class="card-header bg-warning text-dark rounded-top-4 border-0">
+                    <i class="bi bi-box-seam me-2"></i>
+                    Productos
+                </div>
+                <div class="card-body text-center py-4">
+                    <div class="stat-number display-6 fw-bold text-dark">1,234</div>
+                    <div class="stat-label text-muted small text-uppercase mt-2">En inventario</div>
+                    <span class="badge bg-danger bg-opacity-10 text-danger mt-2">-3%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="dashboard-card card border-0 shadow-sm h-100">
+                <div class="card-header bg-success text-white rounded-top-4 border-0">
+                    <i class="bi bi-people me-2"></i>
+                    Clientes
+                </div>
+                <div class="card-body text-center py-4">
+                    <div class="stat-number display-6 fw-bold text-dark">89</div>
+                    <div class="stat-label text-muted small text-uppercase mt-2">Hoy</div>
+                    <span class="badge bg-success bg-opacity-10 text-success mt-2">+8%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="dashboard-card card border-0 shadow-sm h-100">
+                <div class="card-header bg-info text-white rounded-top-4 border-0">
+                    <i class="bi bi-list-check me-2"></i>
+                    Órdenes
+                </div>
+                <div class="card-body text-center py-4">
+                    <div class="stat-number display-6 fw-bold text-dark">42</div>
+                    <div class="stat-label text-muted small text-uppercase mt-2">Pendientes</div>
+                    <span class="badge bg-success bg-opacity-10 text-success mt-2">+15%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Productos -->
+    <div class="row">
+        <div class="col-12">
+            <div class="dashboard-container bg-white rounded-4 shadow-lg p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="h5 fw-bold mb-0">
+                        <i class="bi bi-grid me-2"></i>
+                        Productos Recientes
+                    </h3>
+                    <div>
+                        <button class="btn btn-danger btn-sm rounded-pill px-3 me-2">
+                            <i class="bi bi-plus-lg me-1"></i> Nuevo Producto
+                        </button>
+                        <button class="btn btn-outline-dark btn-sm rounded-pill px-3">
+                            <i class="bi bi-download me-1"></i> Exportar
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover dashboard-table">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">#001</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded-2 p-2 me-2">
+                                            <i class="bi bi-box text-primary"></i>
+                                        </div>
+                                        Arroz Superior 5kg
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-primary bg-opacity-10 text-primary">Abarrotes</span></td>
+                                <td class="fw-bold text-danger">$12.50</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                            <div class="progress-bar bg-success" style="width: 90%"></div>
+                                        </div>
+                                        <small class="text-muted">45</small>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-success bg-opacity-10 text-success">Disponible</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary rounded-pill">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger rounded-pill ms-1">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Más filas pueden ir aquí -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Paginación -->
+                <nav aria-label="Paginación de productos">
+                    <ul class="pagination justify-content-center mb-0">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Anterior</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Siguiente</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // JavaScript específico para el dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Dashboard cargado correctamente');
+        
+        // Ejemplo: Actualizar estadísticas en tiempo real
+        function updateStats() {
+            // Aquí puedes agregar llamadas AJAX para actualizar datos
+        }
+        
+        // Actualizar cada 30 segundos
+        setInterval(updateStats, 30000);
+    });
+</script>
+{% endblock %}

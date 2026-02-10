@@ -5,6 +5,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from core.models import Categoria, Producto
 from core.security import rate_limit_login, check_login_success, log_login_attempt
@@ -439,7 +440,6 @@ def facturacion_view(request):
     """
     Vista para mostrar el formulario de facturación y datos del carrito.
     """
-    from django.contrib.auth.decorators import login_required
     if not request.user.is_authenticated:
         return redirect('login_cliente')
     
@@ -583,3 +583,75 @@ def procesar_factura(request):
         logger.error(f'Error generando factura: {str(e)}')
         messages.error(request, 'Error al generar la factura. Intenta nuevamente.')
         return redirect('facturacion')
+
+# ==============================================
+# DASHBOARD PERSONALIZADO
+# ==============================================
+
+@login_required
+def dashboard_view(request):
+    """Vista del panel de administración personalizado"""
+    # Verificar que el usuario tenga permisos (staff o superuser)
+    if not request.user.is_staff and not request.user.is_superuser:
+        messages.error(request, "No tienes permisos para acceder al panel de administración")
+        return redirect('inicio')
+    
+    # Aquí puedes agregar lógica para obtener estadísticas reales
+    # Por ahora, datos de ejemplo
+    from django.db.models import Sum, Count, Avg
+    from core.models import Producto
+    
+    try:
+        total_productos = Producto.objects.filter(activo=True).count()
+        productos_bajo_stock = Producto.objects.filter(activo=True, stock__lt=10).count()
+        valor_inventario = Producto.objects.filter(activo=True).aggregate(
+            total=Sum('precio') * Sum('stock')
+        )['total'] or 0
+        
+        # Estadísticas de productos por categoría
+        from django.db.models import Q
+        from . import CATEGORIA_MAP
+        
+        productos_consumo = Producto.objects.filter(activo=True).filter(
+            Q(categoria__nombre__icontains='consumo') |
+            Q(categoria__nombre__icontains='aceites') |
+            Q(categoria__nombre__icontains='arroz') |
+            Q(categoria__nombre__icontains='fideos')
+        ).count()
+        
+        productos_limpieza = Producto.objects.filter(activo=True).filter(
+            Q(categoria__nombre__icontains='limpieza') |
+            Q(categoria__nombre__icontains='jabon') |
+            Q(categoria__nombre__icontains='detergente')
+        ).count()
+        
+        # Productos recientes (últimos 10)
+        productos_recientes = Producto.objects.filter(activo=True).order_by('-id')[:10]
+        
+        context = {
+            'user': request.user,
+            'page_title': 'Dashboard',
+            'total_productos': total_productos,
+            'productos_bajo_stock': productos_bajo_stock,
+            'valor_inventario': f"${valor_inventario:,.2f}",
+            'productos_consumo': productos_consumo,
+            'productos_limpieza': productos_limpieza,
+            'productos_recientes': productos_recientes,
+        }
+        
+        return render(request, 'dashboard.html', context)
+        
+    except Exception as e:
+        logger.error(f'Error en dashboard: {str(e)}')
+        # En caso de error, mostrar dashboard con datos básicos
+        context = {
+            'user': request.user,
+            'page_title': 'Dashboard',
+            'total_productos': 0,
+            'productos_bajo_stock': 0,
+            'valor_inventario': "$0.00",
+            'productos_consumo': 0,
+            'productos_limpieza': 0,
+            'productos_recientes': [],
+        }
+        return render(request, 'dashboard.html', context)

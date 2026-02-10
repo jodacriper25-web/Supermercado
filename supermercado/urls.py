@@ -29,6 +29,9 @@ urlpatterns = [
     # Dashboard de administración personalizado
     path('dashboard-admin/', dashboard_admin, name='dashboard_admin'),
 
+    # Dashboard personalizado
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+
     # Quiénes Somos
     path('quienes-somos/', views.quienes_somos, name='quienes_somos'),
 
