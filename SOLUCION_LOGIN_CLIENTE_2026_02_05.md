@@ -1,5 +1,4 @@
 # Solución Completa - Sistema de Login Cliente Supermercado Yaruquíes
-**Fecha:** 05 de Febrero, 2026  
 **Problema:** Error NoReverseMatch al acceder a /login-cliente/ - Ver HTML puro en lugar del formulario
 
 ---

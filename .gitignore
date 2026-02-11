@@ -45,3 +45,9 @@ Thumbs.db
 # Archivos temporales
 *.tmp
 *.bak~
+
+echo. >> .gitignore  # Windows
+echo "*.md" >> .gitignore
+echo "*.txt" >> .gitignore
+echo "!requirements.txt" >> .gitignore
+echo "!runtime.txt" >> .gitignore

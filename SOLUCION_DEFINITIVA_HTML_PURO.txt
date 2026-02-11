@@ -1,6 +1,5 @@
 # ✅ SOLUCION DEFINITIVA - PÁGINAS SIN HTML PURO
-
-**Fecha:** 5 Febrero 2026  
+ 
 **Problema:** TemplateSyntaxError en categoryy quienes_somos - mostraba "HTML puro" al hacer click  
 **Causa:** Template mal formado con `{% endblock %}` duplicado en línea 361 de quienes_somos.html  
 **Solución:** Eliminado `{% endblock %}` de más que cerraba el bloque `{% block content %}` prematuramente  
