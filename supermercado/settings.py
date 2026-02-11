@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,13 +27,13 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     X_FRAME_OPTIONS = 'DENY'
     
-    SECURE_CONTENT_SECURITY_POLICY = {
-        'default-src': ("'self'",),
-        'style-src': ("'self'", "'unsafe-inline'", "cdn.jsdelivr.net", "getbootstrap.com"),
-        'script-src': ("'self'", "cdn.jsdelivr.net", "getbootstrap.com"),
-        'img-src': ("'self'", "data:", "blob:"),
-        'font-src': ("'self'", "cdn.jsdelivr.net"),
-    }
+    #SECURE_CONTENT_SECURITY_POLICY = {
+     #   'default-src': ("'self'",),
+      #  'style-src': ("'self'", "'unsafe-inline'", "cdn.jsdelivr.net", "getbootstrap.com"),
+       # 'script-src': ("'self'", "cdn.jsdelivr.net", "getbootstrap.com"),
+        #'img-src': ("'self'", "data:", "blob:"),
+        #'font-src': ("'self'", "cdn.jsdelivr.net"),
+    #}
 else:
     # Desarrollo: Permitir más flexibilidad
     SESSION_COOKIE_HTTPONLY = True
@@ -106,6 +107,7 @@ USE_TZ = True
 # 📁 Estáticos
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'core' / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # 📷 Media
 MEDIA_URL = '/media/'
@@ -212,7 +214,7 @@ if 'RENDER' in os.environ:
     
     # Configuración de archivos estáticos
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
     
     # Hosts permitidos para Render
     RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
