@@ -200,6 +200,14 @@ if not os.path.exists(LOGS_DIR):
     os.makedirs(LOGS_DIR)
 
 # Configuración para producción en Render
+# CONEXIÓN DIRECTA A RENDER (SOLO PARA IMPORTAR DATOS)
+import dj_database_url
+DATABASES = {
+    'default': dj_database_url.parse(
+        'postgresql://supermercadodb_zk1h_user:CRYSmw38oIihqCNiDsczbRK4GFUpVyDI@dpg-d63ab0p4tr6s739mgmp0-a.oregon-postgres.render.com/supermercado_db_dn44'
+    )
+}
+
 if 'RENDER' in os.environ:
     # Asegurar que Render pueda servir archivos estáticos
     MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
